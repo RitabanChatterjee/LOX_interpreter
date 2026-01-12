@@ -1,0 +1,12 @@
+(" `Straya mate")*("Helleure")+;"figs"+ketchup-"Venezuela";
+("34"){}("34")
+3.14159265,4," Hello mate" 
+"sryar" 34 // checking comments this line should skip
+
+for(var i=0;i<=n;i=i+1)
+{
+    print "Hello Mate";
+}
+
+
+i=i+1;
