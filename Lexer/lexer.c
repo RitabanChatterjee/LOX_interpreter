@@ -92,13 +92,14 @@ TokenList scanTokens(char* str, int len)
             char* temp=substring(str,start,current-start);
             TokenType t1=checkKeyWord(temp);
             addIdentifier(t1,LIT_NONE,values,&ans,temp);
-
+            free(temp);
         }
         else if(res.l==LIT_STRING)
         {
             
             values.str=substring(str,start+1,current-start-2);
             addTok(res.t,res.l,values,&ans);
+            free(values.str);
         }
         else if(res.l==LIT_NONE)
         {
@@ -110,6 +111,7 @@ TokenList scanTokens(char* str, int len)
             
             char* temp=substring(str,start,current-start);
             parseFloat(temp,&values.f);
+            free(temp);
             addTok(res.t,res.l,values,&ans);
         }
         else if(res.l==LIT_INTEGER)
@@ -117,6 +119,7 @@ TokenList scanTokens(char* str, int len)
             char* temp=substring(str,start,current-start);
            
             parseInt(temp,&values.i);
+            free(temp);
             addTok(res.t,res.l,values,&ans);
         }
         
