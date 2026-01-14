@@ -86,7 +86,7 @@ TokenList scanTokens(char* str, int len)
     {
         start=current;
         ScanResult res=scanToken(str,&current);
-        Value values;
+        Value values={0};
         if(res.t==IDENTIFIER)
         {
             char* temp=substring(str,start,current-start);
@@ -119,7 +119,7 @@ TokenList scanTokens(char* str, int len)
             char* temp=substring(str,start,current-start);
            
             parseInt(temp,&values.i);
-            free(temp);
+           free(temp);
             addTok(res.t,res.l,values,&ans);
         }
         

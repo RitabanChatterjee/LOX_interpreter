@@ -7,6 +7,6 @@ for(var i=0;i<=n;i=i+1)
 {
     print "Hello Mate";
 }
-
-
+print nil true
+a*(b+c==d);
 i=i+1;

@@ -1,6 +1,6 @@
 #include "lexer.h"
 #include<stdlib.h>
-char* readFile(const char* filename, size_t* outLength) 
+static char* readFile(const char* filename, size_t* outLength) 
 {
     FILE* file = fopen(filename, "rb");
 

@@ -4,6 +4,7 @@
 #include "TokenDef.h"
 #include "utils.h"
 #include<stdio.h>
+#include<string.h>
 extern int length;
 extern int line;
 

@@ -4,7 +4,7 @@
 int line=0;int length = 0; 
 void addIdentifier(TokenType t1,LiteralType lt1,Value val,TokenList* list,char* id)
 {
-    Token nt;
+    Token nt={-10};
     nt.tType=t1;
     nt.lType=lt1;
     nt.line=line;
@@ -29,7 +29,7 @@ void addIdentifier(TokenType t1,LiteralType lt1,Value val,TokenList* list,char* 
 }
 void addTok(TokenType t1,LiteralType lt1,Value val,TokenList* list)
 {
-    Token nt;
+    Token nt={-10};
     nt.tType=t1;
     nt.lType=lt1;
     nt.line=line;

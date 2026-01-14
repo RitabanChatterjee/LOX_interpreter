@@ -1,0 +1,12 @@
+# binaries
+a
+Lexer/a
+Parser/a
+Parser/parser_test
+
+# object files
+*.o
+
+# editor junk
+*~
+*.swp
