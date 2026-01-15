@@ -3,7 +3,7 @@
 
 #include "recursive_descent.h"
 #include "parse_tree_def.h"
-#include "../Lexer/lexer.h"
+#include "lexer.h"
 Expr* parse(char* str,int len);
 
 #endif /*PARSER_H*/

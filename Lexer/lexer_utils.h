@@ -5,6 +5,7 @@
 #include "utils.h"
 #include<stdio.h>
 #include<string.h>
+#define ERROR_TOKEN (ScanResult) {-10,-10}
 extern int length;
 extern int line;
 

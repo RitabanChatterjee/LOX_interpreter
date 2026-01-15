@@ -1,6 +1,6 @@
 #ifndef PARSE_TREE_DEF_H
 #define PARSE_TREE_DEF_H
-#include "../Lexer/TokenDef.h"
+#include "TokenDef.h"
 #include<string.h>
 typedef enum {
     EXPR_LITERAL,

@@ -1,0 +1,7 @@
+I havent made the grouping struct as I am sceptical about its necessity. If it comes to bite me 
+in the ass, will add it.
+
+Also, I will allow "abc"+123
+
+I will also allow truthey and falsey values like in Python, it cuts down on functions
+like isEmpty(), reducing bloat. This will mean that things such as !str are to be allowed

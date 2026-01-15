@@ -1,7 +1,7 @@
 #ifndef RECURSIVE_DESCENT_H
 #define RECURSIVE_DESCENT_H
 #include "parse_tree_def.h"
-#include "../Lexer/utils.h"
+#include "utils.h"
 
 
 typedef struct Parser

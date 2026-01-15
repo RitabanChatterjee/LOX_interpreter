@@ -1,4 +1,4 @@
-#define ERROR_TOKEN (ScanResult) {-10,-10}
+
 #include "lexer_utils.h"
 
 int line=0;int length = 0; 
