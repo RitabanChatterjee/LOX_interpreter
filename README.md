@@ -8,14 +8,15 @@ git clone https://github.com/RitabanChatterjee/LOX_interpreter/
 # Usage
 
 ## Parser Usage
-  To us the Parser add `#include "Parser/parser.h"` to the C file you want to use the parser in. (C file must be in root, or you must add the path from the directory of the C file to the parser.h. Same applies to Lexer.h)
-
+  To us the Parser add `#include "parser.h"` to the C file you want to use the parser in. 
+   After this,run from project root:
 
  ``` bash
- gcc -o a <path_to_your_file>.c Lexer/lexer.c Lexer/lexer_utils.c Lexer/utils.c Parser/parse_tree_def.c Parser/recursive_descent.c Parser/parser.c
+ gcc -o a <path_to_your_file>.c Lexer/lexer.c Lexer/lexer_util
+s.c Lexer/utils.c Parser/parse_tree_def.c Parser/recursive_descent.c Parser/parser.c -ILexer -IParser
 ```
 ## Lexer Usage
-   To use the lexer, add `#include "Lexer/lexer.h"` to your C file , then run
+   To use the lexer, add `#include "lexer.h"` to your C file , then run from project root
 ```bash
 gcc -o a <path_to_your_file>.c Lexer/lexer.c Lexer/lexer_utils.c Lexer/utils.c
 ```
