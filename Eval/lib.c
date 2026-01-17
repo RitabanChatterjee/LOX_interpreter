@@ -351,6 +351,14 @@ Literal boolify(Literal b)
     {
         ret.t.tType=FALSE;
     }
+    if(b.t.tType==TRUE)
+    {
+        ret.t.tType=TRUE;
+    }
+     if(b.t.tType==FALSE)
+    {
+        ret.t.tType=FALSE;
+    }
     ret.t.tType=ret.t.tType==TRUE?TRUE:FALSE; 
     ret.val.i=ret.t.tType==TRUE;
     ret.t.token_val=ret.val;
@@ -358,6 +366,7 @@ Literal boolify(Literal b)
 }
 Literal boolInvert(Literal b)
 {
+    
     Literal ret=boolify(b);
     ret.t.tType=ret.t.tType==TRUE?FALSE:TRUE; // INVERT
     ret.val.i=ret.t.tType==TRUE;
