@@ -1,6 +1,6 @@
 #include "eval.h"
 
-static const char *token_repr[] = {
+static  char *token_repr[] = {
     /* Single-character tokens */
     "(", ")", "{", "}",
     ",", ".", "-", "+", ";", "/", "*",
@@ -58,21 +58,18 @@ Literal eval(Expr* expr)
                 break;
                 case GREATER:
                 {
-                    if(left.t.tType!=right.t.tType)
+                    // if(left.t.tType!=right.t.tType)
+                    // {
+                    //     /* Throw some error*/
+                    //     char* expected="Same types for comparison operators";
+                    //     char found[64];
+                    //     snprintf(found,"%s > %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                    //     return unexpectedLiteral(expected,found,left.t.line);
+                    // }
+                    Literal ret=compareLiterals(left,right,0);
+                    if(!isErrorLiteral(ret))
                     {
-                        /* Throw some error*/
-                        char* expected="Same types for comparison operators";
-                        char found[64];
-                        snprintf(found,"%s > %s",token_repr[left.t.tType],token_repr[right.t.tType]);
-                        return unexpectedLiteral(expected,found,left.t.line);
-                    }
-                    if( left.t.tType==NUMBER)
-                    {
-                        return compareNumbers(left,right,0);
-                    }
-                    else if(left.t.tType==STRING)
-                    {
-                        return compareStrings(left,right,0);
+                        return ret;
                     }
                     else
                     {
@@ -83,21 +80,18 @@ Literal eval(Expr* expr)
                 break;
                 case GREATER_EQUAL:
                 {
-                    if(left.t.tType!=right.t.tType)
+                    // if(left.t.tType!=right.t.tType)
+                    // {
+                    //     /* Throw some error*/
+                    //      char* expected="Same types for comparison operators";
+                    //     char found[64];
+                    //     snprintf(found,"%s >= %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                    //     return unexpectedLiteral(expected,found,left.t.line);
+                    // }
+                     Literal ret=compareLiterals(left,right,1);
+                    if(!isErrorLiteral(ret))
                     {
-                        /* Throw some error*/
-                         char* expected="Same types for comparison operators";
-                        char found[64];
-                        snprintf(found,"%s >= %s",token_repr[left.t.tType],token_repr[right.t.tType]);
-                        return unexpectedLiteral(expected,found,left.t.line);
-                    }
-                    if( left.t.tType==NUMBER)
-                    {
-                        return compareNumbers(left,right,1);
-                    }
-                    else if(left.t.tType==STRING)
-                    {
-                        return compareStrings(left,right,1);
+                        return ret;
                     }
                     else
                     {
@@ -109,21 +103,18 @@ Literal eval(Expr* expr)
                 break; 
                 case LESS:
                 {
-                    if(left.t.tType!=right.t.tType)
+                    // if(left.t.tType!=right.t.tType)
+                    // {
+                    //     /* Throw some error*/
+                    //     char* expected="Same types for comparison operators";
+                    //     char found[64];
+                    //     snprintf(found,"%s < %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                    //     return unexpectedLiteral(expected,found,left.t.line);
+                    // }
+                     Literal ret=compareLiterals(right,left,0);
+                    if(!isErrorLiteral(ret))
                     {
-                        /* Throw some error*/
-                        char* expected="Same types for comparison operators";
-                        char found[64];
-                        snprintf(found,"%s < %s",token_repr[left.t.tType],token_repr[right.t.tType]);
-                        return unexpectedLiteral(expected,found,left.t.line);
-                    }
-                    if( left.t.tType==NUMBER)
-                    {
-                        return boolInvert(compareNumbers(left,right,0));
-                    }
-                    else if(left.t.tType==STRING)
-                    {
-                        return boolInvert(compareStrings(left,right,0));
+                        return ret;
                     }
                     else
                     {
@@ -134,21 +125,18 @@ Literal eval(Expr* expr)
                 break;
                 case LESS_EQUAL:
                 {
-                    if(left.t.tType!=right.t.tType)
+                    // if(left.t.tType!=right.t.tType)
+                    // {
+                    //     /* Throw some error*/
+                    //      char* expected="Same types for comparison operators";
+                    //     char found[64];
+                    //     snprintf(found,"%s < %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                    //     return unexpectedLiteral(expected,found,left.t.line);
+                    // }
+                     Literal ret=compareLiterals(right,left,1);
+                    if(!isErrorLiteral(ret))
                     {
-                        /* Throw some error*/
-                         char* expected="Same types for comparison operators";
-                        char found[64];
-                        snprintf(found,"%s < %s",token_repr[left.t.tType],token_repr[right.t.tType]);
-                        return unexpectedLiteral(expected,found,left.t.line);
-                    }
-                    if( left.t.tType==NUMBER)
-                    {
-                        return boolInvert(compareNumbers(left,right,1));
-                    }
-                    else if(left.t.tType==STRING)
-                    {
-                        return boolInvert(compareStrings(left,right,1));
+                        return ret;
                     }
                     else
                     {
@@ -157,37 +145,37 @@ Literal eval(Expr* expr)
                     }
                 }
                 break;
-                case EQUAL:
+                case EQUAL_EQUAL:
                 {
-                    if(left.t.tType!=right.t.tType)
-                    {
-                        /* throw some error*/
-                        char* expected="Same types for comparison operators";
-                        char found[64];
-                        snprintf(found,"%s == %s",token_repr[left.t.tType],token_repr[right.t.tType]);
-                        return unexpectedLiteral(expected,found,left.t.line);
-                    }
-                    if(left.t.lType!=right.t.lType && left.t.tType==NUMBER)
-                    {
-                        return isEqualNumber(left,right);
-                    }
-                    else if(left.t.tType==STRING)
-                    {
-                        return isEqualString(left,right);
-                    }
+                    
+                    Literal ret=isEqualLiteral(left,right);
+                    if(!isErrorLiteral(ret))
+                    return ret;
                     else
                     {
                         /* throw some error*/
                         return unexpectedLiteral("Either both Numbers or Strings",token_repr[left.t.tType],left.t.line);
                     }
                 }
+                case BANG_EQUAL:
+                {
+                    Literal ret=isEqualLiteral(left,right);
+                    if(!isErrorLiteral(ret))
+                    return boolInvert(ret);
+                    else
+                    {
+                        /* throw some error*/
+                        return unexpectedLiteral("Either both Numbers or Strings",token_repr[left.t.tType],left.t.line);
+                    }
+                }
+                break;
                 case STAR:
                 {
                     if(left.t.tType!=NUMBER || right.t.tType!=NUMBER)
                     {
                         /* throw some error*/
                          char found[64];
-                        snprintf(found,"%s * %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                        snprintf(found,128,"%s * %s",token_repr[left.t.tType],token_repr[right.t.tType]);
                         return unexpectedLiteral("Both numbers",found,left.t.line);
                     }
                     else
@@ -202,7 +190,7 @@ Literal eval(Expr* expr)
                     {
                         /* throw some error*/
                         char found[64];
-                        snprintf(found,"%s * %s",token_repr[left.t.tType],token_repr[right.t.tType]);
+                        snprintf(found,128,"%s * %s",token_repr[left.t.tType],token_repr[right.t.tType]);
                         return unexpectedLiteral("Both numbers",found,left.t.line);
                     }
                     else
@@ -225,7 +213,7 @@ Literal eval(Expr* expr)
                 case BANG:
                 {
                     if(right.t.tType==STRING || right.t.tType==NUMBER || right.t.tType==TRUE || right.t.tType==FALSE || right.t.tType==NIL)
-                    return boolInvert(isTruthey(right));
+                    return boolInvert(right);
                     else
                     {
                         return unexpectedLiteral("Everything is truthey/falsey","Something Horrible has happened",right.t.line);

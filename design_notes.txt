@@ -11,3 +11,7 @@ true and 0 if not. The lType is LIT_NONE.
 
 For all literals, we maintain that the token_val of the token inside it matches the val field
 of the literal.
+
+
+Truthiness:
+To change the truthiness of something, it is enough to change the boolify() function in Eval/lib.c 
