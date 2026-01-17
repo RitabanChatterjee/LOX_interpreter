@@ -46,6 +46,15 @@ Expr* new_literal(Token t,Value val)
     ret->type=EXPR_LITERAL;
     ret->as.l.val=val;
     ret->as.l.t=t;
+    if(t.tType==TRUE)
+    {
+        ret->as.l.val.i=1;
+    }
+    if(t.tType==FALSE)
+    {
+        ret->as.l.val.i=0;
+    }
+    ret->as.l.t.token_val=ret->as.l.val;
     return ret;
 }
 static void printBinary(Binary b)
@@ -77,6 +86,7 @@ static void printPrimary( Literal l)
         else
         {
             //throw error for error handler, write error handler api
+            
         }
         break;
         case STRING:
@@ -89,9 +99,9 @@ static void printPrimary( Literal l)
             printf("nil");
             break;
         case TRUE:
-        printf("%d",1);break;
+        printf("%s","true");break;
         case FALSE:
-        printf("%d",0);break;
+        printf("%s","false");break;
         case IDENTIFIER:
          if(l.t.identifier_name)
             printf("%s",l.t.identifier_name);break;

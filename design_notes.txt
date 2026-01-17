@@ -4,4 +4,10 @@ in the ass, will add it.
 Also, I will allow "abc"+123
 
 I will also allow truthey and falsey values like in Python, it cuts down on functions
-like isEmpty(), reducing bloat. This will mean that things such as !str are to be allowed
+like isEmpty(), reducing bloat. This will mean that things such as !str are to be allowed.
+
+We will have, for a bool literal, Literal b, the property b.t.token_val.i=1 and b.val.i=1 if 
+true and 0 if not. The lType is LIT_NONE. 
+
+For all literals, we maintain that the token_val of the token inside it matches the val field
+of the literal.

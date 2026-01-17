@@ -62,6 +62,6 @@ void testLexer(const char* filename) {
 // Example usage
 int main() 
 {
-    testLexer("tester.txt");
+    testLexer("Lexer/tester.txt");
     return 0;
 }

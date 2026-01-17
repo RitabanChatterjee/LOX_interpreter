@@ -35,9 +35,15 @@ void addToken(Token t, TokenList* list)
 char* substring(const char *source, size_t start, size_t length) 
 {
     // 1. Validate input indices (optional but good practice)
+    if(length==0)
+    {
+         char* str=malloc(sizeof(char));str[0]='\0'; return str;
+    }
     size_t source_len = strlen(source);
-    if (start >= source_len) {
-        return NULL; // Invalid start index
+    if (start >= source_len) 
+    {
+         // Invalid start index
+         char* str=malloc(sizeof(char));str[0]='\0'; return str;
     }
     // Adjust length if it exceeds the remaining string
     if (start + length > source_len) {

@@ -1,9 +1,10 @@
 #ifndef LIB_H
 #define LIB_H
 #include "parser.h"
-#include "lexer.h"
+#include "TokenDef.h"
 #include<string.h>
 #include<stdlib.h>
+#include "error_handler.h"
 char* toString(Literal v);
 Literal addLiterals(Literal a,Literal b);
 Literal subtractNums(Literal a,Literal b);

@@ -11,7 +11,14 @@ void addIdentifier(TokenType t1,LiteralType lt1,Value val,TokenList* list,char* 
     int len=strlen(id);
     id[len]='\0';
    nt.identifier_name=strdup(id);
-    
+    if(nt.tType==TRUE)
+    {
+        nt.token_val.i=1;
+    }
+    if(nt.tType==FALSE)
+    {
+        nt.token_val.i=0;
+    }
     switch(nt.lType)
     {
         case LIT_STRING:
@@ -81,7 +88,7 @@ static int isalphaNumeric(char c)
 static void handleString(int* current,char* str) //assumes str[*current]=='"'
 {
   
-    advance(current,str);
+    //advance(current,str);
     char b;
     while ( (b = peek(current,str)) != '"' )
     {   if(b=='\0')
