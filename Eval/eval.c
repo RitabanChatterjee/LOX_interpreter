@@ -40,6 +40,10 @@ Literal eval(Expr* expr)
                 break;
                 case MINUS:
                 {
+                    if(left.t.tType==TRUE || left.t.tType==FALSE)
+                    left=toInteger(left);
+                    if(right.t.tType==TRUE || right.t.tType==FALSE)
+                    right=toInteger(right);
                     if(left.t.tType==right.t.tType && left.t.tType==NUMBER)
                     {
                         subtractNums(left,right);
@@ -171,6 +175,10 @@ Literal eval(Expr* expr)
                 break;
                 case STAR:
                 {
+                    if(left.t.tType==TRUE || left.t.tType==FALSE)
+                    left=toInteger(left);
+                    if(right.t.tType==TRUE || right.t.tType==FALSE)
+                    right=toInteger(right);
                     if(left.t.tType!=NUMBER || right.t.tType!=NUMBER)
                     {
                         /* throw some error*/
@@ -186,6 +194,10 @@ Literal eval(Expr* expr)
                 break;
                 case SLASH:
                 {
+                    if(left.t.tType==TRUE || left.t.tType==FALSE)
+                    left=toInteger(left);
+                    if(right.t.tType==TRUE || right.t.tType==FALSE)
+                    right=toInteger(right);
                     if(left.t.tType!=NUMBER || right.t.tType!=NUMBER)
                     {
                         /* throw some error*/

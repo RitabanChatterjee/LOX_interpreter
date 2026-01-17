@@ -21,4 +21,5 @@ Literal negateNum(Literal a);
 Literal isTruthey(Literal a);
 Literal boolify(Literal a);
 Literal boolInvert(Literal a);
+Literal toInteger(Literal b); // converts bool to int
 #endif

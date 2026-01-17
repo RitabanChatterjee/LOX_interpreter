@@ -45,7 +45,7 @@ static int isBool(Literal l)
 {
     return l.t.tType==TRUE || l.t.tType==FALSE;
 }
-static Literal toInteger(Literal b)
+ Literal toInteger(Literal b)
 {
     Literal ret;
     ret.val.i=b.val.i?1:0;
