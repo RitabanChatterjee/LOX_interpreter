@@ -15,3 +15,7 @@ of the literal.
 
 Truthiness:
 To change the truthiness of something, it is enough to change the boolify() function in Eval/lib.c 
+
+In the case of "and" and "or" keywords, i am seeing that true or false is still printing 
+even when there are errors (divide by 0, etc) on both left and right, along with an 
+error message. I have to fix that, or make it undefined behaviour. 

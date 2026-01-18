@@ -27,9 +27,55 @@ Literal eval(Expr* expr)
     {
         case EXPR_BINARY:
         {
+            Token op=expr->as.b.op;
+            switch(op.tType)
+            {
+                case AND:
+                {
+                    Literal left=eval(expr->as.b.left);
+                     if(isErrorLiteral(left)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
+                    left=boolify(left);
+                    
+                    if(!left.val.i)
+                    { 
+                        return makeBoolLit(0,left);
+                    }
+                    Literal right=eval(expr->as.b.right);
+                    if(isErrorLiteral(right)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
+                    right=boolify(right);
+                    
+                    if(!right.val.i)
+                    {
+                        
+                        return makeBoolLit(0,left);
+                    }
+                    return makeBoolLit(1,left);
+
+                }break;
+                case OR:
+                {
+                     Literal left=eval(expr->as.b.left);
+                      if(isErrorLiteral(left)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
+                    left=boolify(left);
+   
+                    if(left.val.i)
+                    {
+                        return makeBoolLit(1,left);
+                    }
+                      Literal right=eval(expr->as.b.right);
+                    if(isErrorLiteral(right)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
+
+                    right=boolify(right);
+                    if(right.val.i)
+                    {
+                        return makeBoolLit(1,left);
+                    }
+                    return makeBoolLit(0,left);
+                }break;
+            }
             Literal left=eval(expr->as.b.left);
             Literal right=eval(expr->as.b.right);
-            Token op=expr->as.b.op;
+            
             
             switch(op.tType)
             {
@@ -46,7 +92,7 @@ Literal eval(Expr* expr)
                     right=toInteger(right);
                     if(left.t.tType==right.t.tType && left.t.tType==NUMBER)
                     {
-                        subtractNums(left,right);
+                        return subtractNums(left,right);
                     }
                     else
                     {
@@ -160,7 +206,7 @@ Literal eval(Expr* expr)
                         /* throw some error*/
                         return unexpectedLiteral("Either both Numbers or Strings",token_repr[left.t.tType],left.t.line);
                     }
-                }
+                }break;
                 case BANG_EQUAL:
                 {
                     Literal ret=isEqualLiteral(left,right);
@@ -210,6 +256,7 @@ Literal eval(Expr* expr)
                         return divideNumbers(left,right);
                     }
                 }break;
+               
                 default:
                 return unexpectedLiteral("Binary operator",token_repr[op.tType],op.line);
 
@@ -251,3 +298,38 @@ Literal eval(Expr* expr)
         }
     }
 }
+
+
+/*
+    case AND:
+                {
+                    left=boolify(left);
+   
+                    if(left.val.i)
+                    {
+                        return makeBoolLit(0,left);
+                    }
+                    right=boolify(right);
+                    if(right.val.i)
+                    {
+                        return makeBoolLit(0,left);
+                    }
+                    return makeBoolLit(1,left);
+
+                }break;
+                case OR:
+                {
+                    left=boolify(left);
+   
+                    if(left.val.i)
+                    {
+                        return makeBoolLit(0,left);
+                    }
+                    right=boolify(right);
+                    if(right.val.i)
+                    {
+                        return makeBoolLit(0,left);
+                    }
+                    return makeBoolLit(1,left);
+                }break;
+*/

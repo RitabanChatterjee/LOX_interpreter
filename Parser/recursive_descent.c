@@ -20,7 +20,35 @@ static int match(Token t, TokenType m)
 }
 Expr* parseExpr(Parser *p)
 {
-    return parseEquality(p);
+    return parseOr(p);
+}
+Expr* parseOr(Parser* p)
+{
+    Expr* ex=parseAnd(p);
+    while(1)
+    {
+        Token t = get(p);
+        if (!(match(t, OR)))
+            break;
+
+        advance(p);               // consume operator
+        Expr* right = parseAnd(p);
+        ex = new_binary(t, ex, right);
+    }
+    return ex;
+}
+Expr* parseAnd(Parser* p)
+{
+    Expr* ex=parseEquality(p);
+    while(1)
+    {
+        Token t=get(p);
+        if(!match(t,AND)) break;
+        advance(p);               // consume operator
+        Expr* right = parseEquality(p);
+        ex = new_binary(t, ex, right);
+    }
+    return ex;
 }
 Expr* parseEquality(Parser* p)
 {

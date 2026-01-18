@@ -19,6 +19,8 @@ Expr* parseTerm(Parser* p);
 Expr* parseFactor(Parser* p);
 Expr* parseUnary(Parser* p);
 Expr* parseLiteral(Parser* p);//parses Literals
+Expr* parseAnd(Parser* p);
+Expr* parseOr(Parser* p);
 // ---------------------------------------------------------------------------------------------------
 
 

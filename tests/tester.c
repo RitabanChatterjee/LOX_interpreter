@@ -603,6 +603,59 @@ void testSubtract()
     }
 
 }
+
+
+int testAND()
+{
+    char* tests[] = {
+    "1 and 2",         // both non-zero → TRUE
+    "0 and 1",         // left false → FALSE (short-circuit)
+    "0 and 0",         // both false → FALSE
+    "5 and 0",         // right false → FALSE
+    "7 and 3",         // both non-zero → TRUE
+    "\"hello\" and 1", // string is truthy → TRUE
+    "0 and \"world\"", // left false → FALSE
+    "\"\" and 1",      // empty string might be false depending on boolify
+    "0 and \"\"",      // left false → FALSE
+    "\"34\" and 0",    // right false → FALSE
+    "\"abc\" and \"def\"" // both strings → TRUE
+};
+int numTests = sizeof(tests) / sizeof(tests[0]);
+
+    for(int i=0;i<8;i++)
+    {
+       //  TokenList tokens=scanTokens(tests[i],strlen(tests[i]));
+        // for(int i=0;i<tokens.size;i++)
+        // {
+        //     printToken(tokens.tokens[i]);fflush(stdout);
+        // }
+        Expr* ex=parse(tests[i],strlen(tests[i]));
+       // printTree(ex);fflush(stdout);
+        printf("%s: ",tests[i]);
+        if(!ex)
+        {
+            printf("ex null"); fflush(stdout);
+        }
+        else if(!(ex->as.b.left))
+        {
+            printf("left null %d",i);fflush(stdout);
+        }
+        else if(!(ex->as.b.right))
+        {
+            printf("right null %d",i);fflush(stdout);
+        }
+        Literal a=ex->as.b.left->as.l;
+        Literal b=ex->as.b.right->as.l;
+        Literal ans=AndLiterals(a,b);
+         if(isErrorLiteral(ans))
+        {
+            printf("On line %d there is an error\n",i+1);continue;
+        }
+        Expr* dof=new_literal(ans.t,ans.val);
+        printTree(dof);fflush(stdout);
+        printf("\n");
+    }
+}
 int main()
 {
     //testComparison();
@@ -613,5 +666,6 @@ int main()
     //testNegation();
     //testMultiply();
    // testDivide();
-   testSubtract();
+  // testSubtract();
+  testAND();
 }

@@ -597,3 +597,45 @@ Literal subtractNums(Literal a,Literal b)
     b=negateNum(b);
     return addLiterals(a,b);
 }
+
+Literal makeBoolLit(int res,Literal l)
+{
+    Literal ret;
+    ret.t.line=l.t.line;
+    ret.t.tType=res?TRUE:FALSE;
+    ret.t.lType=LIT_NONE;
+    ret.val.i=ret.t.tType==TRUE;
+    ret.t.token_val=ret.val;
+    return ret;
+}
+Literal AndLiterals(Literal left,Literal right)
+{
+    left=boolify(left);
+   
+    if(!left.val.i)
+    {
+        return makeBoolLit(0,left);
+    }
+    right=boolify(right);
+    if(!right.val.i)
+    {
+        return makeBoolLit(0,left);
+    }
+    return makeBoolLit(1,left);
+}
+
+Literal orLiterals(Literal left,Literal right)
+{
+    left=boolify(left);
+   
+    if(left.val.i)
+    {
+        return makeBoolLit(1,left);
+    }
+    right=boolify(right);
+    if(right.val.i)
+    {
+        return makeBoolLit(1,left);
+    }
+    return makeBoolLit(0,left);
+}

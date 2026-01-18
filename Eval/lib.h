@@ -22,4 +22,7 @@ Literal isTruthey(Literal a);
 Literal boolify(Literal a);
 Literal boolInvert(Literal a);
 Literal toInteger(Literal b); // converts bool to int
+Literal orLiterals(Literal left,Literal right);
+Literal AndLiterals(Literal left,Literal right);
+Literal makeBoolLit(int res,Literal l);
 #endif
