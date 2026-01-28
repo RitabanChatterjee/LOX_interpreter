@@ -22,3 +22,16 @@ int isErrorLiteral(Literal l)
 {
     return l.t.lType==-1;
 }
+
+Expr* unexpectedExpr(char* msg,int line)
+{
+    printf("On line %d : %s",line,msg);
+    Expr* exp=(Expr*)malloc(sizeof(Expr));
+    exp->type=EXPR_LITERAL;
+    exp->as.l=unexpectedLiteral("","",line);
+    return exp;
+}
+int isErrorExpr(Expr* ex)
+{
+    return isErrorLiteral(ex->as.l);
+}

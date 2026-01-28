@@ -5,7 +5,7 @@ typedef struct Environment Environment;
     Environment* prev; 
     Environment* next;
     Environment* global; //each Environment points directly also to the global env
-    int isGlobal=0;
+    int isGlobal;
     hashtable ht;
 };
 
@@ -16,4 +16,4 @@ Environment* getNestedEnvironment(Environment* toNestWith,int hashTsize);
 
 int addToEnvironment(char* varname, Environment* current,Literal val);
 int getValue(char* varname, Environment* current,Literal* out);
-void freeEnvironment(Environment* env);
+Environment* freeEnvironment(Environment* env);// returns previous environment

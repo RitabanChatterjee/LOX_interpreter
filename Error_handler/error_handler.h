@@ -4,3 +4,5 @@
 
 Literal unexpectedLiteral(char* expected,char* found,int line);
 int isErrorLiteral(Literal l);
+Expr* unexpectedExpr(char* msg,int line);
+int isErrorExpr(Expr* ex);

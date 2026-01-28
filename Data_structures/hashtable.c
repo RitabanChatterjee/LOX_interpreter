@@ -6,6 +6,9 @@ hashtable init_hashtable(int size)
     hashtable ret;
     ret.capacity=size;
     ret.buckets=(Entry**)malloc(size*sizeof(Entry*));
+        for(int i = 0; i < size; i++)
+        ret.buckets[i] = NULL;  // <-- IMPORTANT
+
     ret.numkeys=0;
     return ret;
 }
@@ -26,26 +29,30 @@ static void traverseBucket(int ind, hashtable* ht,char* key,Literal val) // retu
 {
     Entry* head=ht->buckets[ind];
     Entry* cpy=ht->buckets[ind];
+    int found=0;
     while(head!=NULL)
     {
         if(!strcmp(head->key,key))
         {
-            head->key=key;
+            // if(head->value.t.tType == STRING) 
+            // {
+            //     free(head->value.val.str);
+            //     free(head->value.t.token_val.str);
+            // }   
+            //first we must erase the current literal
+            freeLiteral(&head->value);found=1;
+           // head->key=key;
             head->value=val;
             return ;
         }
         head=head->next;
     }
-    if(head==NULL)
-    {
-        ht->buckets[ind]=(Entry*)malloc(sizeof(Entry));
-        ht->buckets[ind]->key=strdup(key);
-        ht->buckets[ind]->next=cpy;
-        ht->buckets[ind]->value=val;
-        ht->numkeys++;
-
-    }
-    return ;
+    Entry* e = malloc(sizeof(*e));
+    e->key = strdup(key);          // copy the key to heap
+    e->value = val;
+    e->next = ht->buckets[ind];    // current head becomes next
+    ht->buckets[ind] = e;          // new node is head
+    ht->numkeys++;
 }
 
 void put(char* key, Literal l,hashtable* ht)
@@ -71,20 +78,21 @@ int get(char* key,hashtable* ht,Literal* out)
     return 0;
 }
 
-void freeList(Entry* e)
+void freeEntry(Entry* e)
 {
     Entry* head=e;
     while(head!=NULL)
     {
         Entry* temp=head;
         head=temp->next;
-        free(temp->key);
-        if(temp->value.t.tType==STRING)
-        {
-            free(temp->value.val.str);
-            free(temp->value.t.token_val.str);
-        }
-        free(temp);
+        free(temp->key);temp->key=NULL;
+        // if(temp->value.t.tType==STRING)
+        // {
+        //     free(temp->value.val.str);
+        //     free(temp->value.t.token_val.str);
+        // }
+        freeLiteral(&temp->value);
+         free(temp);
         temp=NULL;
         
     }
@@ -93,9 +101,11 @@ void freeHashTable(hashtable* ht)
 {
     for(int i=0;i<ht->capacity;i++)
     {
-        freeList(ht->buckets[i]);
+        freeEntry(ht->buckets[i]);
+        ht->buckets[i]=NULL;
     }
     free(ht->buckets);
+    ht->buckets=NULL;
 }
 
 int isKeyPresent(char* key, hashtable* ht)

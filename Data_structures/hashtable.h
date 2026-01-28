@@ -1,5 +1,5 @@
 #include "eval.h"
-
+#include "freeStuff.h"
 typedef struct hashtable hashtable;
 typedef struct Entry Entry;
 
@@ -18,7 +18,7 @@ struct hashtable
 };
 
 hashtable init_hashtable(int size);
-void put(char* key, Literal value,hashtable* ht);//returns -1 if key exists;
+void put(char* key, Literal value,hashtable* ht);
 int get(char* key, hashtable* ht,Literal* out);
 void freeHashTable(hashtable* ht);
 int isPresent(char* key, hashtable* ht);
