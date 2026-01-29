@@ -24,6 +24,17 @@ int hash(const char *str, int capacity)
         hash = ((hash << 5) + hash) + c; 
     return hash % capacity;
 }
+static Literal copyLiteral(Literal src)
+{
+    Literal dst = src;
+
+    if (src.t.lType == LIT_STRING && src.val.str) {
+        dst.val.str = strdup(src.val.str);
+        dst.t.token_val.str = strdup(src.val.str);  // if you mirror it there
+    }
+
+    return dst;
+}
 
 static void traverseBucket(int ind, hashtable* ht,char* key,Literal val) // returns last node if key not present
 {
@@ -40,16 +51,17 @@ static void traverseBucket(int ind, hashtable* ht,char* key,Literal val) // retu
             //     free(head->value.t.token_val.str);
             // }   
             //first we must erase the current literal
+            
             freeLiteral(&head->value);found=1;
            // head->key=key;
-            head->value=val;
+            head->value=copyLiteral(val);
             return ;
         }
         head=head->next;
     }
     Entry* e = malloc(sizeof(*e));
     e->key = strdup(key);          // copy the key to heap
-    e->value = val;
+    e->value = copyLiteral(val);
     e->next = ht->buckets[ind];    // current head becomes next
     ht->buckets[ind] = e;          // new node is head
     ht->numkeys++;

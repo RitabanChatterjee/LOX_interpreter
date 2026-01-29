@@ -3,4 +3,5 @@
 #include <stdio.h>
 #include "lexer.h"
 #include "eval.h"
+#include "Environment.h"
 #endif

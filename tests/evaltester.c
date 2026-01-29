@@ -1,5 +1,5 @@
 #include "eval.h"
-
+#include "Environment.h"
 char* exprTests[] = {
     // Arithmetic
     "1 + 2 + 3",
@@ -193,13 +193,163 @@ char* exprTests[] = {
     // --- Evil nesting ---
     "true or (false and (true or (false and (true or (1 / 0)))))",
     "false and (true or (false and (true or (false and (1 / 0)))))",
+   
+    "a = 1",
+    "b = 2",
+    "c = a = 3",
+    "d = b = a = 4",
+
+    "x = 10",
+    "x = x + 1",
+    "x = x * 2",
+    "x = x - 5",
+    "x = x / 17",
+
+    "a = 1 + 2 * 3",
+    "b = (1 + 2) * 3",
+    "c = 10 - 2 - 3",
+    "d = 10 - (2 - 3)",
+
+    "a = b = 1 + 2",
+    "x = y = z = 5 * 2",
+    "m = n = (2 + 3) * 4",
+
+    "a = 10",
+    "a = a",
+    "a = a + a",
+    "a = a = a = 7",
+
+    "x = 1",
+    "y = 2",
+    "z = x = y = 3",
+    "x = x + y",
+
+    "s = \"hi\"",
+    "s = s + \"!\"",
+    "t = s",
+    "u = t + \" world\"",
+
+    "a = 10",
+    "b = a + \"1\"",
+    "a = b",
+
+    "a=b=c=d=e=f=g=h=i=j=1",
+    "a=a+1",
+    "b=a+1",
+    "c=b+1",
+    "d=c+1",
+
+    "x = (((((1)))))",
+    "x = (1 + (2 * (3 + 4)))",
+
+    "a = b = c = 10 + 5",
+    "a = (b = (c = 20))",
+
+    "x = (y = 5) + 1",
+    "z = (a = 3) * (b = 4)",
+
+    "a = 10",
+    "a = \"hi\"",
+    "a = a + \"!\"",
+
+    "x = 1",
+    "x = 2",
+    "x = 3",
+    "x = 4",
+    "x = 5",
+
+    /* === invalid (should error) === */
+    "1 = a",
+    "(a + b) = c",
+    "\"x\" = 3",
+    "true = false",
+    "nil = 2",
+    "a + b = c",
+    "(a = b) = c",
+    "a = b + c = d",
+    "a = b or c = d",
+    "a = !b = c",
+    "a = 1",
+"b = 2",
+"c = a",
+"d = b + c",
+"e = 1 + 2 * 3",
+"f = (1 + 2) * 3",
+
+"a = b = 3",
+"c = d = e = 4",
+"x = y = z = 5 * 2",
+"m = n = (2 + 3) * 4",
+"a = (b = 5)",
+"x = (y = (z = 10))",
+
+"a = a + 1",
+"a = a * 2",
+"a = a - 3",
+"a = a / 2",
+"a = a + a",
+"a = a * a",
+"a = (a + a) * a",
+
+"x = (y = 5) + 1",
+"z = (a = 3) * (b = 4)",
+"p = (q = 1) + (r = 2)",
+"s = (t = u = 4) + 1",
+"v = w = (x = y = 6)",
+
+"a = b = c = 10 + 5",
+"a = (b = (c = 20))",
+"x = (y = 5) + (z = 6)",
+"a = b + (c = 4)",
+"a = (b = 2) + c",
+"a = (b = 2) * (c = 3)",
+
+"a = b = c = d = e = 1",
+"a = a = a = 7",
+"x = y = z = x + 1",
+
+"1 = a",
+"(a + b) = c",
+"\"x\" = 3",
+"true = false",
+"nil = 2",
+"(a = b) = c",
+"a = b + c = d",
+"a = b or c = d",
+"a = !b = c",
+"(a + b + c) = d",
+"(a * b) = c",
+"(true and false) = x",
+"(nil or true) = y",
+"a=1",
+"a =1",
+"a= 1",
+"a=1+2*3",
+"a = (b = c = d = 5)",
+"a = (((b))) = 3",
+"a = ((b = 3))",
+"a = b = c + d = e",
+"a = (b + c = d)",
+"a = (b = c) = d",
+"a = (b = (c = (d = 4)))",
+"a = (b = 1) + (c = (d = 2) + 3)",
+"a = (b = (c = 2) + 3)",
+"a = ((b = 2) + 3) = 4",
+"(a = b) + c = d",
+"a = b = (c = d = e = f)",
+"a = (b = c = d) + e",
+"a = ((b)) = 3",
+"(a) = 3",
+
 
 
 };
 
 
+
 void evalTester()
 {
+    Environment* curr=initEnvironmentStack(10);
     for(int i=0;i<sizeof(exprTests)/sizeof(exprTests[0]);i++)
     {
         //if(i!=72) continue;
@@ -207,7 +357,8 @@ void evalTester()
         
 
         printf("%s",exprTests[i]); printf(" : ");fflush(stdout);
-        Literal l=eval(ex);
+        
+        Literal l=eval(ex,curr);
         printTree(new_literal(l.t,l.val));printf("   Testcase : %d",i);
         printf("\n");
     }
@@ -296,6 +447,6 @@ void parseTester()
 }
 int main()
 {   
-    //evalTester();
-    parseTester();
+    evalTester();
+   // parseTester();
 }

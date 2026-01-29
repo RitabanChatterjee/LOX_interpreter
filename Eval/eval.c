@@ -20,19 +20,19 @@ static  char *token_repr[] = {
 
     "EOF"
 };
-Literal eval(Expr* expr)
+Literal eval(Expr* expr, Environment* curr)
 {
     ExprType e=expr->type;
     switch(e)
     {
         case EXPR_BINARY:
-        {
+        {   
             Token op=expr->as.b.op;
             switch(op.tType)
             {
                 case AND:
                 {
-                    Literal left=eval(expr->as.b.left);
+                    Literal left=eval(expr->as.b.left,curr);
                      if(isErrorLiteral(left)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
                     left=boolify(left);
                     
@@ -40,7 +40,7 @@ Literal eval(Expr* expr)
                     { 
                         return makeBoolLit(0,left);
                     }
-                    Literal right=eval(expr->as.b.right);
+                    Literal right=eval(expr->as.b.right,curr);
                     if(isErrorLiteral(right)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
                     right=boolify(right);
                     
@@ -54,7 +54,7 @@ Literal eval(Expr* expr)
                 }break;
                 case OR:
                 {
-                     Literal left=eval(expr->as.b.left);
+                     Literal left=eval(expr->as.b.left,curr);
                       if(isErrorLiteral(left)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
                     left=boolify(left);
    
@@ -62,7 +62,7 @@ Literal eval(Expr* expr)
                     {
                         return makeBoolLit(1,left);
                     }
-                      Literal right=eval(expr->as.b.right);
+                      Literal right=eval(expr->as.b.right,curr);
                     if(isErrorLiteral(right)) return unexpectedLiteral("Bool literal","Error",left.t.line);;
 
                     right=boolify(right);
@@ -73,9 +73,8 @@ Literal eval(Expr* expr)
                     return makeBoolLit(0,left);
                 }break;
             }
-            Literal left=eval(expr->as.b.left);
-            Literal right=eval(expr->as.b.right);
-            
+            Literal left=eval(expr->as.b.left,curr);
+            Literal right=eval(expr->as.b.right,curr);
             
             switch(op.tType)
             {
@@ -265,7 +264,7 @@ Literal eval(Expr* expr)
         break;
         case EXPR_UNARY:
         {
-            Literal right=eval(expr->as.u.right);
+            Literal right=eval(expr->as.u.right,curr);
             Token op=expr->as.u.op;
             switch(op.tType)
             {
@@ -295,6 +294,21 @@ Literal eval(Expr* expr)
         case EXPR_LITERAL:
         {
             return expr->as.l;
+        }break;
+        case EXPR_ASSIGN:
+        {
+            Token name=expr->as.a.name.name;
+            Literal right=eval(expr->as.a.right,curr);
+            addToEnvironment(name.identifier_name,curr,right);
+            return right;
+        }break;
+        case EXPR_VARIABLE:
+        {   Literal ret;
+            if(!getValue(expr->as.v.name.identifier_name, curr, &ret))
+            {
+                return unexpectedLiteral("Variable declare before use","Nope",0);
+            }
+            return ret;
         }
     }
 }

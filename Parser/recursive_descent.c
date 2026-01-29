@@ -39,7 +39,7 @@ Expr* parseAssign(Parser* p)
             return new_assign(ex->as.v,parseAssign(p));
         }
         else
-        unexpectedLiteral("variable lvalue,","not that", t.line);
+        return unexpectedExpr("Invalid lvalue", t.line);
     }
    return ex;
 }

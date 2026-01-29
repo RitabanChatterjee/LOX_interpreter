@@ -3,5 +3,6 @@
 
 #include "lib.h"
 #include "error_handler.h"
-Literal eval(Expr* expr);
+#include"Environment.h"
+Literal eval(Expr* expr, Environment* curr);
 #endif

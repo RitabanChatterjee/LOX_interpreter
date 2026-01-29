@@ -1,7 +1,7 @@
 #include "lox.h"
 void runPrompt() {
     char command[1024];
-
+     Environment* curr=initEnvironmentStack(10);
     while (1) {
         printf(">> ");
         fflush(stdout);
@@ -10,13 +10,14 @@ void runPrompt() {
             printf("\n");
             break; // EOF (Ctrl+D)
         }
-
+        if(!strcmp(command,"exit\n")) break;
         size_t len = strlen(command);
         if (len > 0 && command[len - 1] == '\n')
             command[len - 1] = '\0';
 
         Expr* ex = parse(command, strlen(command));
-        Literal ans = eval(ex);
+       
+        Literal ans = eval(ex,curr);
         printTree(new_literal(ans.t, ans.val));
         printf("\n");
     }

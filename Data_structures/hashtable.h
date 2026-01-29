@@ -1,4 +1,6 @@
-#include "eval.h"
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
 #include "freeStuff.h"
 typedef struct hashtable hashtable;
 typedef struct Entry Entry;
@@ -22,3 +24,4 @@ void put(char* key, Literal value,hashtable* ht);
 int get(char* key, hashtable* ht,Literal* out);
 void freeHashTable(hashtable* ht);
 int isPresent(char* key, hashtable* ht);
+#endif
