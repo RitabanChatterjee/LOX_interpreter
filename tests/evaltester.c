@@ -9,7 +9,7 @@ char* exprTests[] = {
     "1.5 + 2.5 + 3.0",
     "2.0 * 3.0 * 4.0",
     "10.0 / 2.0 / 5.0",
-
+    "(12+1)*(12-1)",
     // Unary !
     "!0",
     "!42",
@@ -59,7 +59,7 @@ char* exprTests[] = {
     "\"ab\" < \"abc\"",
     "\"abc\" >= \"abc\"",
     "\"abc\" <= \"abcd\"",
-
+    "(12+1)*(12-1)"
     // Mixed complex
     "!0 + 1 >= 1",
     "(!\"\" + 2) == 2",
@@ -212,8 +212,90 @@ void evalTester()
         printf("\n");
     }
 }
-
-int main()
+void parseTester()
 {
-    evalTester();
+    char* tests[] = {
+    // Basic assignment
+    "a = 1;",
+    "x = 42;",
+    "foo = bar;",
+
+    // Assignment returns value (chaining)
+    "a = b = c = 10;",
+    "x = y = 1 + 2 * 3;",
+    "a = (b = 3);",
+
+    // Precedence vs logicals
+    "a = b or c;",
+    "a = b and c;",
+    "a = b or c = d;",        // should parse as a = (b or (c = d))
+    "a = b = c or d;",        // a = (b = (c or d))
+
+    // Precedence vs comparisons
+    "a = b == c;",
+    "a = b != c;",
+    "a = b < c;",
+    "a = b < c == d;",        // a = ((b < c) == d)
+
+    // Precedence vs arithmetic
+    "a = b + c * d;",
+    "a = b * c + d;",
+    "a = b + c = d;",         // INVALID (lvalue check)
+
+    // Parentheses
+    "(a) = 3;",               // INVALID
+    "a = (b + c);",
+    "a = (b = c) + d;",
+
+    // Nested assignments in expressions
+    "print a = 3;",
+    "print a = b = 4;",
+    "a = (b = (c = 5));",
+
+    // Statement sequences
+    "a = 1; b = 2; c = a = b;",
+    "{ a = 1; b = a = 2; }",
+
+    // Invalid targets
+    "1 = a;",
+    "\"x\" = 3;",
+    "true = false;",
+    "nil = 2;",
+    "a + b = c;",
+    "a * b = c;",
+
+    // Missing RHS
+    // "a = ;",
+    // "a =",
+    // "= 3;",
+
+    // Edge associativity
+    "a = b = c;",
+    "a = (b = c);",
+    "(a = b) = c;",           // INVALID
+
+    // With unary
+    "a = !b;",
+    "a = -b;",                // if unary minus exists
+    "a = !b = c;",            // INVALID
+
+    // With logical short-circuit
+    "a = b and c = d;",       // a = (b and (c = d))
+    "a = b or c = d;",        // a = (b or (c = d))
+
+    
+};
+    for(int i=0;i<sizeof(tests)/sizeof(tests[0]);i++)
+    {   
+        printf("%s  : ",tests[i]);
+        Expr* ex=parse(tests[i],strlen(tests[i]));
+        printTree(ex);
+        printf("\n");
+    }
+
+}
+int main()
+{   
+    //evalTester();
+    parseTester();
 }

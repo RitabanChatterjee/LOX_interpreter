@@ -7,7 +7,7 @@ hashtable init_hashtable(int size)
     ret.capacity=size;
     ret.buckets=(Entry**)malloc(size*sizeof(Entry*));
         for(int i = 0; i < size; i++)
-        ret.buckets[i] = NULL;  // <-- IMPORTANT
+        ret.buckets[i] = NULL;  
 
     ret.numkeys=0;
     return ret;

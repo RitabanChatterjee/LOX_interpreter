@@ -13,6 +13,11 @@ static Token advance(Parser* p)
         return get(p);
     
 }
+static Token peek(Parser* p)
+{
+    if(p->pointer>=p->tokens.size-1) return ERR_TOK;
+    return p->tokens.tokens[p->pointer+1];
+}
 static int match(Token t, TokenType m)
 {
     return t.tType==m;
@@ -20,7 +25,23 @@ static int match(Token t, TokenType m)
 }
 Expr* parseExpr(Parser *p)
 {
-    return parseOr(p);
+    return parseAssign(p);
+}
+Expr* parseAssign(Parser* p)
+{   
+    Expr* ex=parseOr(p);
+    Token t=get(p);
+    if(match(t,EQUAL))
+    {
+        advance(p);
+        if(ex && ex->type==EXPR_VARIABLE)
+        {
+            return new_assign(ex->as.v,parseAssign(p));
+        }
+        else
+        unexpectedLiteral("variable lvalue,","not that", t.line);
+    }
+   return ex;
 }
 Expr* parseOr(Parser* p)
 {
@@ -142,15 +163,15 @@ Expr* parseLiteral(Parser* p)
     else if(t.tType==IDENTIFIER)
     {
         
-        Value val;
-        if(t.identifier_name)
-            {int leng=strlen(t.identifier_name);
-                t.identifier_name[leng]='\0';
-                val.str = strdup(t.identifier_name);
-            } // <-- copy string to heap
-        else
-            val.str = NULL;
-        return new_literal(t, val);
+         Value val;val.str="";
+        // if(t.identifier_name)
+        //     {int leng=strlen(t.identifier_name);
+        //         t.identifier_name[leng]='\0';
+        //         val.str = strdup(t.identifier_name);
+        //     } // <-- copy string to heap
+        // else
+        //     val.str = NULL;
+        return new_variable(t);
     }
     else if(t.tType==TRUE)
     {   
@@ -167,6 +188,7 @@ Expr* parseLiteral(Parser* p)
     {
         return new_literal(t,t.token_val);
     }
+    
     else if(t.tType==LEFT_PAREN)
     {
         Expr* exp=parseExpr(p);
@@ -175,3 +197,4 @@ Expr* parseLiteral(Parser* p)
     }
     return NULL;
 }
+

@@ -6,9 +6,16 @@ typedef enum {
     EXPR_LITERAL,
     EXPR_UNARY,
     EXPR_BINARY,
-     EXPR_GROUPING
+     EXPR_GROUPING,
+     EXPR_VARIABLE,
+     EXPR_ASSIGN
 } ExprType;
 
+typedef enum{
+    STMT_VARDECL,
+    STMT_PRINT,
+    STMT_EXPRESSION
+}StmtType;
 
 
 typedef struct Expr Expr;
@@ -32,7 +39,14 @@ typedef struct {
 typedef struct {
     Expr* expression;
 } Grouping;
-
+typedef struct Variable
+{
+    Token name;   
+}Variable;
+typedef struct Assignment
+{
+    Variable name;Expr* right;
+}Assignment;
 typedef struct Expr {
     ExprType type;
     union {
@@ -40,12 +54,21 @@ typedef struct Expr {
         Binary b;
         Literal l;
         Grouping g;
+        Variable v;
+        Assignment a;
     } as;
 } Expr;
+
+
+
+
+
 
 Expr* new_unary(Token op, Expr* expr);
 Expr * new_binary(Token op, Expr* left, Expr* right);
 Expr* new_literal(Token t,Value val);
+Expr* new_variable( Token name);
+Expr* new_assign(Variable name, Expr* right);
 void printTree(Expr* ex);
 
 #endif

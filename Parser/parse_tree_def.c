@@ -44,7 +44,10 @@ Expr* new_literal(Token t,Value val)
 {
     Expr* ret=(Expr*)(malloc(sizeof(Expr)));
     ret->type=EXPR_LITERAL;
+    if(t.lType!=STRING)
     ret->as.l.val=val;
+    else
+    ret->as.l.val.str=strdup(val.str);
     ret->as.l.t=t;
     if(t.tType==TRUE)
     {
@@ -54,7 +57,13 @@ Expr* new_literal(Token t,Value val)
     {
         ret->as.l.val.i=0;
     }
+    if(t.lType!=LIT_STRING)
     ret->as.l.t.token_val=ret->as.l.val;
+    else
+    {
+        ret->as.l.t.token_val.str=strdup(ret->as.l.val.str);
+
+    }
     return ret;
 }
 static void printBinary(Binary b)
@@ -105,12 +114,22 @@ static void printPrimary( Literal l)
         case IDENTIFIER:
          if(l.t.identifier_name)
             printf("%s",l.t.identifier_name);break;
+        
         default:
         printf("<unknown expr>");
         break;
 
     }
    
+}
+static void printVariable(Variable v)
+{
+    printf("%s",v.name.identifier_name);
+}
+static void printAssignment(Assignment v)
+{
+   printf("("); printVariable(v.name);printf("= ");
+    printTree(v.right);printf(")");
 }
 void printTree(Expr* ex)
 {   if(!ex) return;
@@ -125,5 +144,26 @@ void printTree(Expr* ex)
         case EXPR_LITERAL:
             printPrimary(ex->as.l);
             break;
+        case EXPR_ASSIGN:
+            printAssignment(ex->as.a);break;
+        case EXPR_VARIABLE:
+            printVariable(ex->as.v);
     }
+}
+
+Expr* new_variable( Token name)
+{
+    Expr* ret=malloc(sizeof(Expr));
+    ret->as.v.name=name;
+    ret->type=EXPR_VARIABLE;
+    return ret;
+    
+}
+Expr* new_assign(Variable name, Expr* right)
+{
+    Expr* ret=malloc(sizeof(Expr));
+    ret->type=EXPR_ASSIGN;
+    ret->as.a.name=name;
+    ret->as.a.right=right;
+    return ret;
 }

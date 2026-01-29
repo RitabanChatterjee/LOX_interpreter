@@ -2,7 +2,7 @@
 #define RECURSIVE_DESCENT_H
 #include "parse_tree_def.h"
 #include "utils.h"
-
+#include "error_handler.h"
 
 typedef struct Parser
 {
@@ -21,6 +21,7 @@ Expr* parseUnary(Parser* p);
 Expr* parseLiteral(Parser* p);//parses Literals
 Expr* parseAnd(Parser* p);
 Expr* parseOr(Parser* p);
+   Expr* parseAssign(Parser* p);
 // ---------------------------------------------------------------------------------------------------
 
 
