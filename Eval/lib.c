@@ -204,6 +204,10 @@ char* toString(Literal l)
             char *ret=strdup(l.val.str);
             return ret;
         }
+        default:
+        {
+            return "";
+        }
     }
 }
 
@@ -393,7 +397,7 @@ Literal boolInvert(Literal b)
 
 static int isTrue(Literal a)
 {
-    a.t.lType==LIT_NONE && a.t.tType==TRUE;
+    return a.t.lType==LIT_NONE && a.t.tType==TRUE;
 }                          
 Literal isEqualLiteral(Literal a,Literal b)
 {

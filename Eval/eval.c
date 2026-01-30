@@ -310,6 +310,8 @@ Literal eval(Expr* expr, Environment* curr)
             }
             return ret;
         }
+        default:
+            return unexpectedLiteral("idk not weird shit like this","weird shit",0);
     }
 }
 

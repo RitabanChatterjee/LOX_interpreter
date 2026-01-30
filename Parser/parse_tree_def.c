@@ -44,7 +44,7 @@ Expr* new_literal(Token t,Value val)
 {
     Expr* ret=(Expr*)(malloc(sizeof(Expr)));
     ret->type=EXPR_LITERAL;
-    if(t.lType!=STRING)
+    if(t.tType!=STRING)
     ret->as.l.val=val;
     else
     ret->as.l.val.str=strdup(val.str);
