@@ -19,4 +19,6 @@ Environment* getNestedEnvironment(Environment* toNestWith,int hashTsize);
 int addToEnvironment(char* varname, Environment* current,Literal val);
 int getValue(char* varname, Environment* current,Literal* out);
 Environment* freeEnvironment(Environment* env);// returns previous environment
+int modifyVariable(char* varname, Environment* curr,Literal val);
+
 #endif

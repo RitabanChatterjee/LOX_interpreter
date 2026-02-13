@@ -1,12 +1,14 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra -std=c11 -D_POSIX_C_SOURCE=200809L
+CFLAGS = -g -std=c11 -D_POSIX_C_SOURCE=200809L
 
 
 
-INCLUDES = -IEval -ILexer -IParser -Itests -IError_handler -IData_structures
+INCLUDES = -IEval -ILexer -IParser -Itests -IError_handler -IData_structures -I.
 
 SRCS = \
-tests/evaltester.c \
+lox.c \
+Data_structures/functionTable.c \
+Data_structures/functionEnv.c \
 Data_structures/Environment.c \
 Data_structures/hashtable.c \
 Data_structures/freeStuff.c \

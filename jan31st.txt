@@ -1,0 +1,10 @@
+Issues:
+
+1>> var a;var b; var c;
+
+>> var x= (a=5)+(b="3")+(c=10);
+On line 0, Expected: Variable declare before use, Found: NopeOn line 0, Expected: Variable declare before use, Found: Nope
+
+It seems simply defining var a, var b, var c on same line separated by semicolons
+isn't working.This might be because of how the repl is structured, and it expects only one statement
+in anything not a block. This needn't be an issue, but can show up in documentation.

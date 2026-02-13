@@ -15,3 +15,11 @@ Expr* parse(char* str, int len)
     Expr* exp=parseExpr(&p);
     return exp;
 }
+Stmt parseStmt(char* str,int len)
+{
+    tokens= scanTokens(str,len);
+    Parser p;
+    p.tokens=tokens;
+    p.pointer=0;
+    return declaration(&p);
+}

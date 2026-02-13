@@ -2,6 +2,10 @@
 void runPrompt() {
     char command[1024];
      Environment* curr=initEnvironmentStack(10);
+     functionEnv* fcurr=initFunctionStack(512);
+     envpack en;
+     en.curr=curr;
+     en.fcurr=fcurr;
     while (1) {
         printf(">> ");
         fflush(stdout);
@@ -15,10 +19,10 @@ void runPrompt() {
         if (len > 0 && command[len - 1] == '\n')
             command[len - 1] = '\0';
 
-        Expr* ex = parse(command, strlen(command));
+        Stmt ex = parseStmt(command, strlen(command));
        
-        Literal ans = eval(ex,curr);
-        printTree(new_literal(ans.t, ans.val));
+         evalStmt(ex,&en);
+       // printTree(new_literal(ans.t, ans.val));
         printf("\n");
     }
 }

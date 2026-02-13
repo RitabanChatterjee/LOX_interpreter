@@ -16,6 +16,7 @@ of the literal.
 Truthiness:
 To change the truthiness of something, it is enough to change the boolify() function in Eval/lib.c 
 
-In the case of "and" and "or" keywords, i am seeing that true or false is still printing 
-even when there are errors (divide by 0, etc) on both left and right, along with an 
-error message. I have to fix that, or make it undefined behaviour. 
+I will have variables initialized to nil if not assigned yet.
+Also, there is a mild issue with overflows, but I don't really want to refactor all that code,
+so I will simply document that any work will have to be done within the bounds of INT_MIN to INT_MAX
+if integer. I can optionally provide a bigints library once I am done with classes.

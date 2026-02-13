@@ -124,6 +124,13 @@ TokenList scanTokens(char* str, int len)
         }
         
     }
+    // Token tlast;
+    // tlast.identifier_name="";
+    // tlast.line=line;
+    // tlast.lType=LIT_NONE;
+    // tlast.tType=EOF;
+    // tlast.token_val.i=0;
+    // addToken(tlast,&ans);
     return ans;
 }
 

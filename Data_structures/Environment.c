@@ -10,9 +10,26 @@ Environment* initEnvironmentStack(int hashtsize)
     env->prev=NULL;
     return env;
 }
-
-int addToEnvironment(char* varname, Environment* env, Literal val)
+int modifyVariable(char* varname, Environment* curr,Literal val)
 {
+    Environment* head=curr;Literal ret;
+    while(head)
+    {
+        if( get(varname,&head->ht,&ret)) break;
+        head=head->prev;
+    }
+    if(head)
+    {
+        put(varname,val, &head->ht);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+int addToEnvironment(char* varname, Environment* env, Literal val)
+{   
     put(varname,val,&env->ht);
     return 0;
 }

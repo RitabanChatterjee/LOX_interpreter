@@ -20,8 +20,18 @@ static  char *token_repr[] = {
 
     "EOF"
 };
-Literal eval(Expr* expr, Environment* curr)
+Literal eval(Expr* expr, envpack* curr)
 {
+    if(!expr)
+    {
+        Literal ret;
+        ret.val.str=";";
+        ret.t.token_val.str=";";
+        ret.t.tType=SEMICOLON;
+        ret.t.lType=LIT_NONE;
+        ret.t.line=0;
+        return ret;
+    }
     ExprType e=expr->type;
     switch(e)
     {
@@ -75,11 +85,13 @@ Literal eval(Expr* expr, Environment* curr)
             }
             Literal left=eval(expr->as.b.left,curr);
             Literal right=eval(expr->as.b.right,curr);
-            
+             if(isErrorLiteral(left)) return left;
+            if(isErrorLiteral(right)) return right;
             switch(op.tType)
             {
                 case PLUS:
                 {
+                   
                     return addLiterals(left,right);
                 }
                 break;
@@ -295,16 +307,79 @@ Literal eval(Expr* expr, Environment* curr)
         {
             return expr->as.l;
         }break;
+        case EXPR_CALL:
+        {   
+            Stmt holdf;
+            if(getFunctionFromEnv(curr->fcurr,expr->as.fc.name.identifier_name,expr->as.fc.list.size,&holdf))
+            {
+                // we must first inject arguments into new scope. 
+                Environment* nested=getNestedEnvironment(curr->curr,512);
+                
+                for(int i=0;i<expr->as.fc.list.size;i++)
+                {
+                    addToEnvironment(holdf.as.fn.args.arguments.data[i].name.identifier_name,
+                        nested,
+                        eval(expr->as.fc.list.data[i],curr));
+                        Literal check;check.val.i=0;check.t.tType=NIL;
+                        getValue(holdf.as.fn.args.arguments.data[i].name.identifier_name,nested,&check);
+                     //   printf("injected %d",check.val.i);
+                       // printPrimary(check);
+                       //printf("\n");
+
+                }
+                envpack* nesterpack=(envpack*)malloc(sizeof(envpack));
+                nesterpack->curr=nested;
+                nesterpack->fcurr=curr->fcurr;
+                Package retfrom;
+                for(int i=0;i<holdf.as.fn.functionBody.count;i++)
+                {
+                    retfrom=evalStmt(holdf.as.fn.functionBody.statements[i],nesterpack);
+                     if (retfrom.rt != NONE) break;
+                }
+                if(retfrom.rt!=NONE)
+                {
+                    return retfrom.val;
+                }
+                else
+                {
+                    Literal retnul;
+                    retnul.val.i=0;
+                    retnul.t.line=-1;
+                    retnul.t.lType=LIT_NONE;
+                    retnul.t.tType=NIL;
+                    retnul.t.token_val.i=0;
+                    return retnul;
+                }
+            }
+            else
+            {
+                printf("Function not defined");
+                 Literal retnul;
+                    retnul.val.i=0;
+                    retnul.t.line=-1;
+                    retnul.t.lType=LIT_NONE;
+                    retnul.t.tType=NIL;
+                    retnul.t.token_val.i=0;
+                    return retnul; 
+            }
+        }break;
         case EXPR_ASSIGN:
         {
             Token name=expr->as.a.name.name;
             Literal right=eval(expr->as.a.right,curr);
-            addToEnvironment(name.identifier_name,curr,right);
+            if(isErrorLiteral(right)) return right;
+            Literal wast;
+            if(modifyVariable(name.identifier_name,curr->curr,right))
+            {
+
+            }
+            else
+            return unexpectedLiteral("Variable declare before use","Nope",0);
             return right;
         }break;
         case EXPR_VARIABLE:
         {   Literal ret;
-            if(!getValue(expr->as.v.name.identifier_name, curr, &ret))
+            if(!getValue(expr->as.v.name.identifier_name, curr->curr, &ret))
             {
                 return unexpectedLiteral("Variable declare before use","Nope",0);
             }
@@ -349,3 +424,147 @@ Literal eval(Expr* expr, Environment* curr)
                     return makeBoolLit(1,left);
                 }break;
 */
+
+static char* printPrimary( Literal l)
+{   
+    switch(l.t.tType)
+    {
+        case NUMBER:
+        if(l.t.lType==LIT_INTEGER)
+        {   
+            char*buff=(char*)malloc(12);
+            snprintf(buff,12,"%d",l.t.token_val.i);
+            return buff;
+        }
+        else if(l.t.lType==LIT_FLOAT)
+        {
+            char* buff=(char*)malloc(32);
+            snprintf(buff,32,"%f", l.t.token_val.f);
+            return buff;
+        }
+        
+        else
+        {
+            //throw error for error handler, write error handler api
+            return "numerror";
+        }
+        break;
+        case STRING:
+            if(l.t.lType==LIT_STRING)
+            {
+                int len=strlen(l.t.token_val.str);
+                char* buff=(char*)malloc(len+1);
+                snprintf(buff,len+1,"%s",l.t.token_val.str);
+                return buff;
+            }
+            break;
+        case NIL:
+            return "nil";
+            break;
+        case TRUE:
+        return "true";break;
+        case FALSE:
+        return "false";break;
+        case IDENTIFIER:
+         if(l.t.identifier_name)
+            {
+                int len=strlen(l.t.identifier_name);
+                char* buff=(char*)malloc(len+1);
+                snprintf(buff,len+1,"%s",l.t.identifier_name);
+                return buff;
+                break;
+            }
+        
+        default:
+       return "<unknown expr>";
+        break;
+
+    }
+   
+}
+
+Package evalStmt(Stmt st, envpack* curr)
+{
+   Literal empty;
+   empty.val.i=0;
+   empty.t.line=-1;
+   empty.t.lType=LIT_NONE;
+   empty.t.tType=NIL;
+   empty.t.token_val.i=0;
+    switch(st.type)
+    {
+        case STMT_EXPRESSION:
+        {
+           eval(st.as.es.expr,curr);
+            //return ;
+        }
+        break;
+
+        case STMT_PRINT:
+        {
+            Literal l=eval(st.as.ps.expr,curr);
+            Literal ret;
+            ret.val.str=printPrimary(l);
+            printf("%s",ret.val.str);
+          //  return;
+            // ret.t.token_val.str=strdup(ret.val.str);
+            // ret.t.line=l.t.line;
+            // ret.t.lType=LIT_STRING;
+            // ret.t.tType=STRING;
+            // return ret;
+
+        }break;
+        case STMT_VARDECL:
+        {   Literal ret;
+            ret.t.token_val.i=0;
+             ret.t.line=-2;
+            ret.t.lType=LIT_NONE;
+             ret.t.tType=NIL;
+            // return ret;
+            addToEnvironment(st.as.vd.v.name.identifier_name,curr->curr,ret);
+            if(st.as.vd.init)
+            eval(st.as.vd.init,curr);
+            
+            //return ;
+        }
+        break;
+        case STMT_ERROR:
+        {
+            printf("Error");
+            //return ;
+        }
+        break;
+        case STMT_BLOCK:
+        {
+            Environment* nest=getNestedEnvironment(curr->curr,512);
+            //functionEnv* fnest=stackFunctions(curr->fcurr,curr->fcurr->fht.capacity);
+            envpack en;
+            en.curr=nest;
+            en.fcurr=curr->fcurr;
+            for(int i=0;i<st.as.bl.count;i++)
+            {
+
+                evalStmt(st.as.bl.statements[i],&en);
+            }
+            freeEnvironment(nest);
+            
+           // return ;
+        }break;
+        case STMT_FUNCTION:
+        {   Stmt check;
+            if(!getFunctionFromEnv(curr->fcurr,st.as.fn.functname.identifier_name,st.as.fn.args.arguments.size,&check))
+            addFunctionToEnv(curr->fcurr,st.as.fn.functname.identifier_name,st.as.fn.args.arguments.size,st);
+            else {printf("Already defined");}
+
+        }break;
+        case STMT_RETURN:
+        {
+            Literal send=eval(st.as.retpack.ex,curr);
+            Package p;
+            p.rt=VALUE;
+            p.val=send;
+            return p;
+        }break;
+    }
+    return (Package){NONE, empty};
+}

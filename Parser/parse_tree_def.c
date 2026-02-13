@@ -122,6 +122,14 @@ static void printPrimary( Literal l)
     }
    
 }
+Expr* new_callee(Token fname, argExprArray passed)
+{
+    Expr* ret=(Expr*)(malloc(sizeof(Expr)));
+    ret->type=EXPR_CALL;
+    ret->as.fc.list=passed;
+    ret->as.fc.name=fname;
+    return ret;
+}
 static void printVariable(Variable v)
 {
     printf("%s",v.name.identifier_name);
@@ -130,6 +138,17 @@ static void printAssignment(Assignment v)
 {
    printf("("); printVariable(v.name);printf("= ");
     printTree(v.right);printf(")");
+}
+static void printCall(callee f)
+{
+  //  printf("argsize=%d\n",f.list.size);
+    printf("%s(",f.name.identifier_name);
+    
+    for(int i=0;i<f.list.size;i++)
+    {
+        printTree(f.list.data[i]);printf(",");
+    }
+    printf(")");
 }
 void printTree(Expr* ex)
 {   if(!ex) return;
@@ -148,6 +167,11 @@ void printTree(Expr* ex)
             printAssignment(ex->as.a);break;
         case EXPR_VARIABLE:
             printVariable(ex->as.v);
+            break;
+        case EXPR_CALL:
+        {
+            printCall(ex->as.fc);
+        }break;
     }
 }
 
@@ -166,4 +190,78 @@ Expr* new_assign(Variable name, Expr* right)
     ret->as.a.name=name;
     ret->as.a.right=right;
     return ret;
+}
+void printVardecl(varDecl vd)
+{
+    printf(" var %s",vd.v.name.identifier_name);
+    if(vd.init)
+    {
+        printf(" = ");printTree(vd.init);
+    }
+    printf(" ;");
+}
+void printPrintStatement(printStmt ps)
+{
+    printf("print ");
+    printTree(ps.expr);
+    printf(" ;");
+}
+void printExprStatement(exprStmt es)
+{
+    printTree(es.expr);
+    printf(" ;");
+}
+void printStatementTree(Stmt st)
+{
+    switch(st.type)
+    {
+        case STMT_VARDECL:
+        {
+            printVardecl(st.as.vd);
+        }
+        break;
+        case STMT_PRINT:
+        {
+            printPrintStatement(st.as.ps);
+        }break;
+        case STMT_EXPRESSION:
+        {
+            printExprStatement(st.as.es);
+        }break;
+        case STMT_ERROR:
+        {
+            printf("Error in parsing statement");
+        }break;
+        case STMT_BLOCK:
+        {
+            printf("{");
+            for(int i=0;i<st.as.bl.count;i++)
+            {   printf("\n");
+                printStatementTree(st.as.bl.statements[i]);
+                
+            }
+            printf("\n}");
+        }break;
+        case STMT_FUNCTION:
+        {
+            printf("%s",st.as.fn.functname.identifier_name);
+            printf("(");
+            for(int i=0;i<st.as.fn.args.arguments.size;i++)
+            {
+                printf("%s,",st.as.fn.args.arguments.data[i].name.identifier_name);
+            }
+            printf(")");
+            Stmt st1;
+            st1.type=STMT_BLOCK;
+            st1.as.bl=st.as.fn.functionBody;
+
+            printStatementTree(st1);
+        }break;
+        case STMT_RETURN:
+        {
+            printf("return ");
+            printTree(st.as.retpack.ex);
+            printf(";");
+        }
+    }
 }

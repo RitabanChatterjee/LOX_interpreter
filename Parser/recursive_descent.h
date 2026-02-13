@@ -24,5 +24,11 @@ Expr* parseOr(Parser* p);
    Expr* parseAssign(Parser* p);
 // ---------------------------------------------------------------------------------------------------
 
-
+Stmt declaration(Parser* p);
+Stmt variableDeclaration(Parser* p);
+Stmt otherStatements(Parser* p);
+Stmt printstatement(Parser* p);
+Stmt expressionStatement(Parser* p);
+Stmt parseBlock(Parser* p);
+Stmt parseFunction(Parser* p);
 #endif /*recursive_descent.h*/

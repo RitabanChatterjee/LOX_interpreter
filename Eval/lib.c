@@ -90,7 +90,7 @@ Literal addLiterals(Literal a,Literal b)
             {
                 ret.t.tType=NUMBER;
                 ret.t.lType=LIT_INTEGER;
-                ret.val.f=blit.val.i;
+                ret.val.i=blit.val.i;
                 ret.t.line=a.t.line;
                 ret.t.token_val=ret.val;
                 return addLiterals(a,ret);
@@ -99,7 +99,7 @@ Literal addLiterals(Literal a,Literal b)
             {
                 ret.t.tType=NUMBER;
                 ret.t.lType=LIT_INTEGER;
-                ret.val.f=blit.val.i;
+                ret.val.i=blit.val.i;
                 ret.t.line=b.t.line;
                 ret.t.token_val=ret.val;
                 return addLiterals(ret,b);
@@ -119,7 +119,7 @@ Literal addLiterals(Literal a,Literal b)
         if(a.t.lType==LIT_STRING)
         {   
             ret.val.str=concat(a.val.str,b.val.str);
-            ret.t.token_val.str=ret.val.str;
+            ret.t.token_val.str=strdup(ret.val.str);
             return ret;
         }
         else if(a.t.lType==LIT_FLOAT )
@@ -155,7 +155,8 @@ Literal addLiterals(Literal a,Literal b)
         if((a.t.tType!=NUMBER && a.t.tType!=STRING) || (b.t.tType!=NUMBER && b.t.tType!=STRING))
         return unexpectedLiteral("String+NUMBER, or number +number or string+string","heh",a.t.line);//For now,if something wrong, then tType will show -1
         Literal ret;
-        ret.t.token_val=a.t.token_val;
+
+        //ret.t.token_val.str=strdup(a.t.token_val.str);
         ret.t.line=a.t.line;
         
         ret.t.lType=LIT_STRING;
@@ -168,7 +169,7 @@ Literal addLiterals(Literal a,Literal b)
         free(a_str);
         free(b_str);
         ret.val.str=merged;//printf("%s",ret.val.str);
-        ret.t.token_val.str=merged;
+        ret.t.token_val.str=strdup(merged);
         return ret;
     }   
     else 
