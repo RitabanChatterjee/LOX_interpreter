@@ -9,7 +9,7 @@ void printStatementTree(Stmt s);
 void testFunctionParsing(void)
 {
     const char* tests[] = {
-        "fun foo() { }",
+        "fun foo() { if(1==1) {return 1;} else if(2==2){return 2;} else if(3==3){return 3;}}",
         "fun add(a, b) { return   a + b; }",
         "fun square(x) { x * x; }",
        // "fun max(a, b) { if (a > b) { return a; } else { return b; } }",
@@ -24,7 +24,7 @@ void testFunctionParsing(void)
 
     "fun add(a, b) { return a + b; }",
     "print add(10, 5);",                   // prints 15
-
+        
     "fun square(x) { return x * x; }",
     "print square(7);",                    // prints 49
 
@@ -68,7 +68,8 @@ void testFunctionParsing(void)
     en.fcurr=initFunctionStack(512);
     for (int i = 0; i < ntests; i++) {
         printf("==== Test %d ====\n    :%s", i,tests[i]);fflush(stdout);
-        evalStmt(parseStmt(tests[i],strlen(tests[i])),&en);
+       Stmt s=parseStmt(tests[i],strlen(tests[i]));
+       printStatementTree(s);
         printf("\n\n");
     }
 }

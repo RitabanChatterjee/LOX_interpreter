@@ -175,6 +175,60 @@ Stmt parseFunction(Parser* p)
     return *st;
 
 }
+Stmt parseIf(Parser* p)
+{
+    Stmt er;Stmt ret;ret.type=STMT_IF;
+    er.type=STMT_ERROR;
+
+    if(get(p).tType==IF)
+    {
+        advance(p);// consume if
+    }
+    if(get(p).tType==LEFT_PAREN)
+    {
+        advance(p);
+    }
+    else
+    {
+        er.as.error.msg="Was expecting (";
+        return er;
+    }
+    ret.as.ifStmt.cond=parseExpr(p);
+    Token res=consume(RIGHT_PAREN,p,"Expected )");
+    if(res.line==-2) {er.as.error.msg="Expected )"; return er;}
+     Stmt hold=parseBlock(p);
+     if(hold.type==STMT_BLOCK)
+    ret.as.ifStmt.condblock=hold.as.bl;
+    else if(hold.type==STMT_ERROR) return hold;
+   
+    ret.type=STMT_IF;
+    ret.as.ifStmt.type=NO_ELSE;
+    if(get(p).tType==ELSE)
+    {   
+        ret.as.ifStmt.type=ELSE_ONLY;
+        advance(p);
+        if(get(p).tType==IF)
+        {
+            ret.as.ifStmt.type=ELSE_IF;
+            ret.as.ifStmt.elb.as.elif=malloc(sizeof(struct ifStmt));
+            Stmt holg=parseIf(p);
+            if(holg.type==STMT_IF)
+            {*ret.as.ifStmt.elb.as.elif=holg.as.ifStmt;return ret;}
+            else if(holg.type==STMT_ERROR)
+            {
+                return holg;
+            }
+        }
+        else if(get(p).tType==LEFT_BRACE)
+        {
+            Stmt hold=parseBlock(p);
+            if(hold.type!=STMT_ERROR)
+            ret.as.ifStmt.elb.as.condblock=hold.as.bl;
+            else return hold;
+        }
+    }
+    return ret;
+}
 Stmt otherStatements(Parser* p)
 {
     if(get(p).tType==PRINT)
@@ -190,6 +244,10 @@ Stmt otherStatements(Parser* p)
     else if(get(p).tType==FUN)
     {
         return parseFunction(p);
+    }
+    else if(get(p).tType==IF)
+    {
+        return parseIf(p);
     }
     else
     {

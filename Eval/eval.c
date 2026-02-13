@@ -544,7 +544,8 @@ Package evalStmt(Stmt st, envpack* curr)
             for(int i=0;i<st.as.bl.count;i++)
             {
 
-                evalStmt(st.as.bl.statements[i],&en);
+                Package ret=evalStmt(st.as.bl.statements[i],&en);
+                if(ret.rt==VALUE) return ret;
             }
             freeEnvironment(nest);
             
@@ -564,6 +565,31 @@ Package evalStmt(Stmt st, envpack* curr)
             p.rt=VALUE;
             p.val=send;
             return p;
+        }break;
+        case STMT_IF:
+        {
+            if(boolify(eval(st.as.ifStmt.cond,curr)).t.tType==TRUE)
+            {
+                Stmt exe;
+                exe.type=STMT_BLOCK;
+                exe.as.bl=st.as.ifStmt.condblock;
+                return evalStmt(exe,curr);
+            }
+            else if(st.as.ifStmt.type==ELSE_ONLY)
+            {
+                Stmt exe;
+                exe.type=STMT_BLOCK;
+                exe.as.bl=st.as.ifStmt.elb.as.condblock;
+                return evalStmt(exe,curr);
+            }
+            else if(st.as.ifStmt.type==ELSE_IF)
+            {
+                Stmt exe;
+                exe.type=STMT_IF;
+                exe.as.ifStmt=*st.as.ifStmt.elb.as.elif;
+                return evalStmt(exe,curr);
+            }
+            
         }break;
     }
     return (Package){NONE, empty};

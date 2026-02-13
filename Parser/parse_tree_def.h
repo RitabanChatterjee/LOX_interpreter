@@ -22,11 +22,14 @@ typedef enum{
     STMT_ERROR,
     STMT_BLOCK,
     STMT_FUNCTION,
-    STMT_RETURN
+    STMT_RETURN,
+    STMT_IF
 }StmtType;
 
+typedef enum{ELSE_ONLY, ELSE_IF, NO_ELSE} ElseType;
 
 typedef struct Expr Expr;
+
 
 typedef struct {
     Token op;
@@ -98,6 +101,7 @@ typedef struct returnStmt
 {
     Expr* ex;
 }returnStmt;
+
 typedef struct Stmt Stmt;
 DEFINE_ARRAY(Variable,argArray);
 
@@ -127,7 +131,21 @@ typedef struct Stmt
 
         struct block functionBody;
     }fn;
-    
+    struct ifStmt
+    {
+         ElseType type;
+        Expr* cond;
+        struct block condblock;
+        struct elseStmt
+        {   
+            union
+            {
+                struct ifStmt* elif;
+                struct block condblock;
+            }as;
+            
+        }elb;
+    }ifStmt;
 
    }as;
    

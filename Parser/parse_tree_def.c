@@ -211,6 +211,16 @@ void printExprStatement(exprStmt es)
     printTree(es.expr);
     printf(" ;");
 }
+void printBlock(Stmt st)
+{
+     printf("{");
+            for(int i=0;i<st.as.bl.count;i++)
+            {   printf("\n");
+                printStatementTree(st.as.bl.statements[i]);
+                
+            }
+            printf("\n}");
+}
 void printStatementTree(Stmt st)
 {
     switch(st.type)
@@ -254,7 +264,6 @@ void printStatementTree(Stmt st)
             Stmt st1;
             st1.type=STMT_BLOCK;
             st1.as.bl=st.as.fn.functionBody;
-
             printStatementTree(st1);
         }break;
         case STMT_RETURN:
@@ -262,6 +271,35 @@ void printStatementTree(Stmt st)
             printf("return ");
             printTree(st.as.retpack.ex);
             printf(";");
+        }break;
+        case STMT_IF:
+        {
+            printf("if (");printTree(st.as.ifStmt.cond);printf(")");
+            printf("{");
+            for(int i=0;i<st.as.ifStmt.condblock.count;i++)
+            {
+                printStatementTree(st.as.ifStmt.condblock.statements[i]);
+                printf("\n");
+            }
+            printf("}\n");
+            if(st.as.ifStmt.type==NO_ELSE)return;
+            if(st.as.ifStmt.type==ELSE_ONLY)
+            {
+                printf("ELSE\n{");
+                for(int i=0;i<st.as.ifStmt.elb.as.condblock.count;i++)
+                {
+                    printStatementTree(st.as.ifStmt.elb.as.condblock.statements[i]);
+                    printf("\n");
+                }
+            }
+            else if(st.as.ifStmt.type==ELSE_IF)
+            {
+                Stmt pr;
+                pr.type=STMT_IF;
+                pr.as.ifStmt=*st.as.ifStmt.elb.as.elif;
+                printStatementTree(pr);
+            }
+            
         }
     }
 }
