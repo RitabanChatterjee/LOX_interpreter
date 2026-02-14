@@ -139,6 +139,20 @@ Literal eval(Expr* expr, envpack* curr)
                     }
                 }
                 break;
+                case MOD:
+                {
+                    Literal ret;
+                    if(!(left.t.lType=LIT_INTEGER && right.t.lType==LIT_INTEGER))
+                    {
+                        return unexpectedLiteral("Integer numbers","Not that",ret.t.line);
+                    }
+                    ret.val.i=left.val.i%right.val.i;
+                    ret.t.token_val.i=ret.val.i;
+                    ret.t.line=left.t.line;
+                    ret.t.lType=LIT_INTEGER;
+                    ret.t.tType=NUMBER;
+                    return ret;
+                }break;
                 case GREATER_EQUAL:
                 {
                     // if(left.t.tType!=right.t.tType)
@@ -505,7 +519,27 @@ Package evalStmt(Stmt st, envpack* curr)
             Literal l=eval(st.as.ps.expr,curr);
             Literal ret;
             ret.val.str=printPrimary(l);
-            printf("%s",ret.val.str);
+            int len;  int i=0;
+            if((len=strlen(ret.val.str))>0) 
+            for( i=0;i<len-1;i++)
+            {
+                if(ret.val.str[i]=='\\')
+                {
+                    if(ret.val.str[i+1]=='n')
+                    {
+                        putchar('\n');
+                    }
+                    if(ret.val.str[i+1]=='t')
+                    {
+                        putchar('\t');
+                    }
+                    i++;
+                }
+                else
+                putchar(ret.val.str[i]);
+            }
+            if(i!=len)
+            putchar(ret.val.str[len-1]);
           //  return;
             // ret.t.token_val.str=strdup(ret.val.str);
             // ret.t.line=l.t.line;

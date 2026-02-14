@@ -19,9 +19,10 @@ typedef enum TokenType
 
   // Keywords.
   AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-  PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,token_EOF
-
+  PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,token_EOF,MOD,
+    LIST, INDEX
 }TokenType;
+
 typedef enum LiteralType
 {
     LIT_NONE, LIT_STRING,LIT_INTEGER, LIT_FLOAT

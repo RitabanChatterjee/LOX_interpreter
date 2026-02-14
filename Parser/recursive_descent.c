@@ -478,7 +478,7 @@ Expr* parseFactor(Parser* p)
     {
         Token t=get(p);
         
-        if(!(match(t,SLASH) || match(t,STAR)))
+        if(!(match(t,SLASH) || match(t,STAR) || match(t,MOD)))
         {
             break;
         }

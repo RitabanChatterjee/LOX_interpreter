@@ -204,6 +204,14 @@ ScanResult scanToken(char* str, int* current)
             return tokenAndLiteralTypeHelper(STRING,LIT_STRING);break;
         case '\n':
         line++;break;
+        case '%':
+        {
+            return tokenAndLiteralTypeHelper(MOD,LIT_NONE);
+        }break;
+        case '[':
+        {
+
+        }break;
         case ' ':
         break;
         case '\r':

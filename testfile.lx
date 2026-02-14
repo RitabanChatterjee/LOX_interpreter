@@ -1,0 +1,25 @@
+print 10;
+fun checkPrime(i)
+{
+    for(var k=2;k<=i/2;k=k+1)
+    {
+        var d=i/k;
+        if(i==d*k) 
+        {return false;}
+    }
+    return true;
+}
+print 11;
+
+var count=0;
+print "hello";
+for(var i=0;i<100;i=i+1)
+{
+    if(checkPrime(i))
+    {
+        count=count+1;
+    }
+}
+print count;
+
+print 43%10;
