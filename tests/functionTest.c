@@ -10,7 +10,7 @@ void testFunctionParsing(void)
 {
     const char* tests[] = {
         "fun foo() { if(1==1) {return 1;} else if(2==2){return 2;} else if(3==3){return 3;}}",
-        "fun add(a, b) { return   a + b; }",
+        "fun add(a, b) {for(var i=0;i<5;i++){print i;} }",
         "fun square(x) { x * x; }",
        // "fun max(a, b) { if (a > b) { return a; } else { return b; } }",
         "fun factorial(n) { var a=1; { return 1; } return f(n,2*b+1) * n-1; }",

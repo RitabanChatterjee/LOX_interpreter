@@ -23,7 +23,9 @@ typedef enum{
     STMT_BLOCK,
     STMT_FUNCTION,
     STMT_RETURN,
-    STMT_IF
+    STMT_IF,
+    STMT_WHILE,
+    STMT_FOR
 }StmtType;
 
 typedef enum{ELSE_ONLY, ELSE_IF, NO_ELSE} ElseType;
@@ -105,7 +107,7 @@ typedef struct returnStmt
 typedef struct Stmt Stmt;
 DEFINE_ARRAY(Variable,argArray);
 
-typedef struct Stmt
+ struct Stmt
 {
    StmtType type;
    union 
@@ -146,10 +148,21 @@ typedef struct Stmt
             
         }elb;
     }ifStmt;
-
+    struct whileStmt
+    {
+        Expr* exp;
+        struct block condblock;
+    }whileSt;
+    struct forStmt
+    {
+        Stmt* init;
+        Stmt* cond;
+        Stmt* inc;
+        struct block blst;
+    }forSt;
    }as;
    
-}Stmt;
+};
 typedef struct block blockStmt;
 typedef struct funtion function;
 

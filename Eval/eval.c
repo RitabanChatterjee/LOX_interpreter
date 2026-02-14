@@ -591,6 +591,37 @@ Package evalStmt(Stmt st, envpack* curr)
             }
             
         }break;
+        case STMT_WHILE:
+        {
+            while(boolify(eval(st.as.whileSt.exp,curr)).t.tType==TRUE)
+            {
+                Stmt exe;
+                exe.type=STMT_BLOCK;
+                exe.as.bl=st.as.whileSt.condblock;
+                Package r=evalStmt(exe,curr);
+                if(r.rt==VALUE) return r;
+            }
+        }break;
+        case STMT_FOR:
+        {
+            // inject the var into the environment, then remove it as soon as done
+            int injected=0;
+            if(st.as.forSt.init->type==STMT_VARDECL)
+            {   Literal nil; nil.val.i=0;nil.t.token_val.i=0;nil.t.tType=NIL;nil.t.lType=LIT_NONE;
+                evalStmt(*st.as.forSt.init,curr);
+                //injected=1;
+               // printf("%s",st.as.forSt.init->as.vd.v.name.identifier_name);
+                Stmt r; r.type=STMT_WHILE; r.as.whileSt.exp=st.as.forSt.cond->as.es.expr;
+                r.as.whileSt.condblock=st.as.forSt.blst;
+                //int c=r.as.whileSt.condblock.count++;
+               
+                Package ret=evalStmt(r,curr);
+                // now remove loop variable from environment
+                
+                addToEnvironment(st.as.forSt.init->as.vd.v.name.identifier_name,curr->curr,nil);
+                if(ret.rt==VALUE) return ret;
+            }
+        }break;
     }
     return (Package){NONE, empty};
 }

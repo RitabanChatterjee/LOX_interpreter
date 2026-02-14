@@ -300,6 +300,28 @@ void printStatementTree(Stmt st)
                 printStatementTree(pr);
             }
             
-        }
+        }break;
+        case STMT_WHILE:
+        {
+            printf("while(");
+            printTree(st.as.whileSt.exp);
+            printf(")");
+            Stmt bls;
+            bls.type=STMT_BLOCK;
+            bls.as.bl=st.as.whileSt.condblock;
+            printStatementTree(bls);
+        }break;
+        case STMT_FOR:
+        {
+            printf("for(");
+            printStatementTree(*st.as.forSt.init);
+            printStatementTree(*st.as.forSt.cond);
+            printStatementTree(*st.as.forSt.inc);
+            printf(")");
+            Stmt bls;
+            bls.type=STMT_BLOCK;
+            bls.as.bl=st.as.forSt.blst;
+            printStatementTree(bls);
+        }break;
     }
 }

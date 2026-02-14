@@ -229,6 +229,91 @@ Stmt parseIf(Parser* p)
     }
     return ret;
 }
+Stmt parseWhile(Parser* p)
+{
+    Stmt err;Stmt ret;ret.type=STMT_WHILE;
+    err.type=STMT_ERROR;
+    if(get(p).tType==WHILE)
+    {
+        advance(p);
+    }
+    if(get(p).tType!=LEFT_PAREN)
+    {
+        err.as.error.msg="Expected (";
+        return err;
+    }
+    advance(p);
+    Expr* ex=parseExpr(p);
+    if(!isErrorExpr(ex))
+    {
+        ret.as.whileSt.exp=ex;
+    }
+    else
+    {
+        err.as.error.msg="Error evaluating exp";
+        return err;
+    }
+    Token res=consume(RIGHT_PAREN,p,") expected");
+    if(res.line==-2)
+    {
+        err.as.error.msg="Expected )";
+        return err;
+    }
+    Stmt hold=parseBlock(p);
+    if(hold.type!=STMT_ERROR)
+    ret.as.whileSt.condblock=hold.as.bl;
+    else return hold;
+
+    return ret;
+}
+Stmt parseFor(Parser* p)
+{   Stmt err; err.type=STMT_ERROR;Stmt ret;ret.type=STMT_FOR;
+    if(get(p).tType==FOR)
+    {
+        advance(p);
+    }
+    if(get(p).tType==LEFT_PAREN)
+    {
+        advance(p);
+    }
+    else
+    {
+        err.as.error.msg="Expected (";
+        return err;
+    }
+    Stmt hold=declaration(p);
+    ret.as.forSt.init=(Stmt*)malloc(sizeof(Stmt));
+    if(hold.type!=STMT_ERROR)
+    *ret.as.forSt.init=hold;
+    else return hold;
+    ret.as.forSt.cond=(Stmt*)malloc(sizeof(Stmt));
+    *ret.as.forSt.cond=declaration(p);
+    if(ret.as.forSt.cond->type!=STMT_EXPRESSION)
+    {
+        err.as.error.msg="Expected an conditional statement";
+        return err;
+    }
+    ret.as.forSt.inc=(Stmt*)malloc(sizeof(Stmt));
+    ret.as.forSt.inc->type=STMT_EXPRESSION;
+    ret.as.forSt.inc->as.es.expr=parseExpr(p);
+    Token ch=consume(RIGHT_PAREN,p,"expected )");
+    if(ch.line==-2) {
+        err.as.error.msg="expected )";
+        return err;
+    }
+    Stmt holdf=parseBlock(p);
+    if(holdf.type!=STMT_ERROR)
+    ret.as.forSt.blst=holdf.as.bl;
+    else
+    {
+        err.as.error.msg="Error parsing";
+        return err;
+    }
+    int c=++ret.as.forSt.blst.count;
+     ret.as.forSt.blst.statements=realloc(ret.as.forSt.blst.statements,c*sizeof(Stmt));
+    ret.as.forSt.blst.statements[c-1]=*ret.as.forSt.inc;
+    return ret;
+}
 Stmt otherStatements(Parser* p)
 {
     if(get(p).tType==PRINT)
@@ -248,6 +333,14 @@ Stmt otherStatements(Parser* p)
     else if(get(p).tType==IF)
     {
         return parseIf(p);
+    }
+    else if(get(p).tType==WHILE)
+    {
+        return parseWhile(p);
+    }
+    else if(get(p).tType==FOR)
+    {
+        return parseFor(p);
     }
     else
     {
