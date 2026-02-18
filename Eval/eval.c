@@ -398,6 +398,30 @@ Literal eval(Expr* expr, envpack* curr)
             {
                 return unexpectedLiteral("Variable declare before use","Nope",0);
             }
+            if(expr->as.v.type==INDEXED_VAR)
+            {
+                Literal st=eval(expr->as.v.indexp,curr);
+                
+                if(st.t.lType!=LIT_INTEGER)
+                {
+                    return unexpectedLiteral("Integer index expected","Nope",0);
+                }
+                if(st.val.i<0 || st.val.i>=strlen(ret.val.str)) 
+                {
+                    return unexpectedLiteral("in bounds","Nope",0);
+                }
+                Literal fin;
+                if(ret.t.lType==LIT_STRING)
+                {
+                    fin.val.str=(char*)malloc(2);
+                    snprintf(fin.val.str,2,"%c",ret.val.str[st.val.i]);
+                    fin.t.token_val.str=strdup(fin.val.str);
+                    fin.t.line=expr->as.v.name.line;
+                    fin.t.lType=LIT_STRING;
+                    fin.t.tType=STRING;
+                    return fin;
+                }
+            }
             return ret;
         }
         default:

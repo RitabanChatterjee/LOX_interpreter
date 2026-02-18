@@ -535,7 +535,14 @@ Expr* parseLiteral(Parser* p)
         //     } // <-- copy string to heap
         // else
         //     val.str = NULL;
-        return new_variable(t);
+        Expr* pos=NULL;
+        if(get(p).tType==LEFT_SQUARE)
+        {
+            advance(p);
+            pos=parseExpr(p);
+            consume(RIGHT_SQUARE,p,"Expected ]");
+        }
+        return new_variable(t,pos);
     }
     
     else if(t.tType==TRUE)

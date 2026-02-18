@@ -1,19 +1,7 @@
-fun fibo(n)
-{
-    if(n<=1) {return n;}
-    return fibo(n-1)+fibo(n-2);
-}
-
-//print 78*1+"bac";
-var k=1234;
-for(var i=18;i>=0;i--)
-{
-    print "fibo is"+fibo(i);
-    k%=7;
-    print "\nk is:"+k+"\n";
-}
-print "im here";
-var f=23;
-f=f%3;
-print f;
-//print "I can do mod " +3413%7;
+var f="abcdef";
+var g=f[3]+f[-1]+f[3];
+var h;
+print h;
+h=f[-1];
+print h;
+print g;

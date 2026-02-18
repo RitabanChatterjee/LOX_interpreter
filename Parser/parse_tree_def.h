@@ -25,9 +25,10 @@ typedef enum{
     STMT_RETURN,
     STMT_IF,
     STMT_WHILE,
-    STMT_FOR
+    STMT_FOR,
+    STMT_CLASS
 }StmtType;
-
+typedef enum{INDEXED_VAR,UNINDEXED_VAR}IndexType;
 typedef enum{ELSE_ONLY, ELSE_IF, NO_ELSE} ElseType;
 
 typedef struct Expr Expr;
@@ -54,7 +55,9 @@ typedef struct {
 } Grouping;
 typedef struct Variable
 {
-    Token name;   
+    IndexType type;
+    Token name;
+    Expr* indexp;   
 }Variable;
 typedef struct Assignment
 {
@@ -106,7 +109,7 @@ typedef struct returnStmt
 
 typedef struct Stmt Stmt;
 DEFINE_ARRAY(Variable,argArray);
-
+typedef struct classStmt classStmt;
  struct Stmt
 {
    StmtType type;
@@ -160,11 +163,33 @@ DEFINE_ARRAY(Variable,argArray);
         Stmt* inc;
         struct block blst;
     }forSt;
+
+    struct classStmt
+    {
+        struct functions
+        {
+            struct function* functions;
+            int size;
+            int accessLevel;
+        }inst_functions;
+
+        struct vars
+        {
+            varDecl* declarations;
+            int size;
+            int accesslevel;
+        }inst_vars;
+
+        struct classStmt* base;
+
+        struct function* constructor;
+        
+        
+    }class_st;
    }as;
    
 };
-typedef struct block blockStmt;
-typedef struct funtion function;
+
 
 
 
@@ -173,7 +198,7 @@ typedef struct funtion function;
 Expr* new_unary(Token op, Expr* expr);
 Expr * new_binary(Token op, Expr* left, Expr* right);
 Expr* new_literal(Token t,Value val);
-Expr* new_variable( Token name);
+Expr* new_variable( Token name,Expr* ex);
 Expr* new_assign(Variable name, Expr* right);
 Expr* new_callee(Token fname,argExprArray passed);
 void printTree(Expr* ex);

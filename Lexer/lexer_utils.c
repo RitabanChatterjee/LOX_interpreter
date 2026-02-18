@@ -319,7 +319,11 @@ ScanResult scanToken(char* str, int* current)
         }break;
         case '[':
         {
-
+            return tokenAndLiteralTypeHelper(LEFT_SQUARE,LIT_NONE);
+        }break;
+        case ']':
+        {
+            return tokenAndLiteralTypeHelper(RIGHT_SQUARE,LIT_NONE);
         }break;
         case ' ':
         break;

@@ -175,10 +175,12 @@ void printTree(Expr* ex)
     }
 }
 
-Expr* new_variable( Token name)
+Expr* new_variable( Token name,Expr* ex)
 {
     Expr* ret=malloc(sizeof(Expr));
+    ret->as.v.type=(ex)?INDEXED_VAR:UNINDEXED_VAR;
     ret->as.v.name=name;
+    ret->as.v.indexp=ex;
     ret->type=EXPR_VARIABLE;
     return ret;
     
