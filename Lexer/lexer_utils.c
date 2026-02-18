@@ -40,7 +40,24 @@ void addTok(TokenType t1,LiteralType lt1,Value val,TokenList* list)
     nt.tType=t1;
     nt.lType=lt1;
     nt.line=line;
-   
+    if(t1==PLUS_PLUS)
+    {
+        Token last=list->tokens[list->size-1];
+        Token ass;
+        ass.line=line;
+        ass.lType=LIT_NONE;
+        ass.tType=EQUAL;
+        
+        addToken(ass,list);
+        addToken(last,list);
+        Token one;
+        one.line=line;one.lType=LIT_INTEGER;one.token_val.i=1;
+        ass.tType=PLUS;
+        addToken(ass,list);
+        one.tType=NUMBER;
+        addToken(one,list);
+        return;
+    }
     switch(nt.lType)
     {
         case LIT_STRING:
@@ -168,7 +185,16 @@ ScanResult scanToken(char* str, int* current)
       case ',': return tokenAndLiteralTypeHelper(COMMA,LIT_NONE); break;
       case '.': return tokenAndLiteralTypeHelper(DOT,LIT_NONE); break;
       case '-': return tokenAndLiteralTypeHelper(MINUS,LIT_NONE); break;
-      case '+': return tokenAndLiteralTypeHelper(PLUS,LIT_NONE); break;
+      case '+': 
+      {
+        if(peek(current,str)=='+')
+        {
+            advance(current,str);
+            return tokenAndLiteralTypeHelper(PLUS_PLUS,LIT_NONE);
+        }
+        return tokenAndLiteralTypeHelper(PLUS,LIT_NONE); 
+      }
+      break;
       case ';': return tokenAndLiteralTypeHelper(SEMICOLON,LIT_NONE); break;
       case '*': return tokenAndLiteralTypeHelper(STAR,LIT_NONE); break; 
       case '!' :

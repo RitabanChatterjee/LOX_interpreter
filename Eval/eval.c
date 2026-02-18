@@ -314,6 +314,7 @@ Literal eval(Expr* expr, envpack* curr)
                         return negateNum(right);
                     }
                 }break;
+                
             }
         }
         break;
@@ -659,3 +660,29 @@ Package evalStmt(Stmt st, envpack* curr)
     }
     return (Package){NONE, empty};
 }
+
+// case PLUS_PLUS:
+//                 {
+//                     if(right.t.tType!=NUMBER) return unexpectedLiteral("Numbers","not that",right.t.line);
+//                     if(right.t.tType==LIT_INTEGER)
+//                     {
+//                         Literal ret;
+//                         ret.val.i=right.val.i+1;
+//                         ret.t.line=right.t.line;
+//                         ret.t.lType=LIT_INTEGER;
+//                         ret.t.tType=NUMBER;
+//                         ret.t.token_val.i=ret.val.i;
+//                         modifyVariable()
+//                     }
+//                     else if(right.t.lType==LIT_FLOAT)
+//                     {
+//                         Literal ret;
+//                         ret.val.f=right.val.f+1;
+//                         ret.t.line=right.t.line;
+//                         ret.t.lType=LIT_FLOAT;
+//                         ret.t.tType=NUMBER;
+//                         ret.t.token_val.f=ret.val.f;
+//                         return ret;
+//                     }
+                    
+//                 }break;

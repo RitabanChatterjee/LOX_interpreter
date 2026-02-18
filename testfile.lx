@@ -1,25 +1,11 @@
-print 10;
-fun checkPrime(i)
+fun fibo(n)
 {
-    for(var k=2;k<=i/2;k=k+1)
-    {
-        var d=i/k;
-        if(i==d*k) 
-        {return false;}
-    }
-    return true;
+    if(n<=1) {return n;}
+    return fibo(n-1)+fibo(n-2);
 }
-print 11;
 
-var count=0;
-print "hello";
-for(var i=0;i<100;i=i+1)
+print 78*1+"bac";
+for(var i=0;i<19;i++)
 {
-    if(checkPrime(i))
-    {
-        count=count+1;
-    }
+    print i;
 }
-print count;
-
-print 43%10;
