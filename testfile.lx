@@ -4,8 +4,16 @@ fun fibo(n)
     return fibo(n-1)+fibo(n-2);
 }
 
-print 78*1+"bac";
-for(var i=0;i<19;i++)
+//print 78*1+"bac";
+var k=1234;
+for(var i=18;i>=0;i--)
 {
-    print i;
+    print "fibo is"+fibo(i);
+    k%=7;
+    print "\nk is:"+k+"\n";
 }
+print "im here";
+var f=23;
+f=f%3;
+print f;
+//print "I can do mod " +3413%7;

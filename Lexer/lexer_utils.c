@@ -58,6 +58,57 @@ void addTok(TokenType t1,LiteralType lt1,Value val,TokenList* list)
         addToken(one,list);
         return;
     }
+    else if(t1==MINUS_MINUS)
+    {
+        Token last=list->tokens[list->size-1];
+        Token ass;
+        ass.line=line;
+        ass.lType=LIT_NONE;
+        ass.tType=EQUAL;
+        
+        addToken(ass,list);
+        addToken(last,list);
+        Token one;
+        one.line=line;one.lType=LIT_INTEGER;one.token_val.i=1;
+        ass.tType=MINUS;
+        addToken(ass,list);
+        one.tType=NUMBER;
+        addToken(one,list);
+        return;
+    }
+    if(t1>=PLUS_EQUAL && t1<=MOD_EQUAL)
+    {
+         Token last=list->tokens[list->size-1];
+        Token ass;
+        ass.line=line;
+        ass.lType=LIT_NONE;
+        ass.tType=EQUAL;
+        
+        addToken(ass,list);
+        addToken(last,list);
+        if(t1==PLUS_EQUAL)
+        {
+            ass.tType=PLUS;
+        }
+        else if(t1==MINUS_EQUAL)
+        {
+            ass.tType=MINUS;
+        }
+        else if(t1==STAR_EQUAL)
+        {
+            ass.tType=STAR;
+        }
+        else if(t1==SLASH_EQUAL)
+        {
+            ass.tType=SLASH;
+        }
+        else if(t1==MOD_EQUAL)
+        {
+            ass.tType=MOD;
+        }
+        addToken(ass,list);
+        return ;
+    }
     switch(nt.lType)
     {
         case LIT_STRING:
@@ -184,7 +235,20 @@ ScanResult scanToken(char* str, int* current)
       case '}': return tokenAndLiteralTypeHelper(RIGHT_BRACE,LIT_NONE); break;
       case ',': return tokenAndLiteralTypeHelper(COMMA,LIT_NONE); break;
       case '.': return tokenAndLiteralTypeHelper(DOT,LIT_NONE); break;
-      case '-': return tokenAndLiteralTypeHelper(MINUS,LIT_NONE); break;
+      case '-': 
+      {
+        if(peek(current,str)=='-')
+        {
+            advance(current,str);
+            return tokenAndLiteralTypeHelper(MINUS_MINUS,LIT_NONE);
+        }
+        else if(peek(current,str)=='=')
+        {
+            advance(current,str);
+            return tokenAndLiteralTypeHelper(MINUS_EQUAL,LIT_NONE);
+        }
+        return tokenAndLiteralTypeHelper(MINUS,LIT_NONE); 
+      }break;
       case '+': 
       {
         if(peek(current,str)=='+')
@@ -192,11 +256,25 @@ ScanResult scanToken(char* str, int* current)
             advance(current,str);
             return tokenAndLiteralTypeHelper(PLUS_PLUS,LIT_NONE);
         }
+        else if(peek(current,str)=='=')
+        {
+            advance(current,str);
+            return tokenAndLiteralTypeHelper(PLUS_EQUAL,LIT_NONE);
+        }
         return tokenAndLiteralTypeHelper(PLUS,LIT_NONE); 
       }
       break;
       case ';': return tokenAndLiteralTypeHelper(SEMICOLON,LIT_NONE); break;
-      case '*': return tokenAndLiteralTypeHelper(STAR,LIT_NONE); break; 
+      case '*': 
+      {
+        if(peek(current,str)=='=')
+        {
+            advance(current,str);
+            return tokenAndLiteralTypeHelper(STAR_EQUAL,LIT_NONE);
+        }
+        return tokenAndLiteralTypeHelper(STAR,LIT_NONE);
+      } 
+       break; 
       case '!' :
         if(peek(current,str)=='=')
         {(*current)++;return tokenAndLiteralTypeHelper(BANG_EQUAL,LIT_NONE);}
@@ -232,6 +310,11 @@ ScanResult scanToken(char* str, int* current)
         line++;break;
         case '%':
         {
+            if(peek(current,str)=='=')
+            {
+                advance(current,str);
+                return tokenAndLiteralTypeHelper(MOD_EQUAL,LIT_NONE);
+            }
             return tokenAndLiteralTypeHelper(MOD,LIT_NONE);
         }break;
         case '[':
@@ -248,6 +331,11 @@ ScanResult scanToken(char* str, int* current)
             if(peek(current,str)=='/')
             {
                 skipLine(current,str);
+            }
+            else if(peek(current,str)=='=')
+            {
+                advance(current,str);
+                return tokenAndLiteralTypeHelper(SLASH_EQUAL,LIT_NONE);
             }
             else 
             {
